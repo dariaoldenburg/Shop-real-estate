@@ -47,5 +47,12 @@
       });
     };
 
+    self.remove = function (offerID) {
+      return $http({
+        method: 'DELETE',
+        url: '/api/offers/' + offerID,
+      });
+    };
+
   }
 }());

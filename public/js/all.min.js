@@ -226,7 +226,11 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
     $scope.buy = function (offer) {
       EstatesService.buy($scope.userId, offer.user_id, offer.id);
-    }
+    };
+
+    $scope.remove = function (offerID) {
+      EstatesService.remove(offerID);
+    };
   }
 }());
 (function() {
@@ -365,6 +369,13 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
           recipient_id: recipientID,
           offer_id: offerID
         }
+      });
+    };
+
+    self.remove = function (offerID) {
+      return $http({
+        method: 'DELETE',
+        url: '/api/offers/' + offerID,
       });
     };
 

@@ -20,6 +20,10 @@
 
     $scope.buy = function (offer) {
       EstatesService.buy($scope.userId, offer.user_id, offer.id);
-    }
+    };
+
+    $scope.remove = function (offerID) {
+      EstatesService.remove(offerID);
+    };
   }
 }());
