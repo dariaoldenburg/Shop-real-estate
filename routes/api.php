@@ -53,6 +53,10 @@ Route::get('/offers/{offer}', [
     'uses' => 'OfferController@show'
 ]);
 
+Route::get('/offers', [
+    'uses' => 'OfferController@index'
+]);
+
 Route::get('/offers/user/{user}', [
     'uses' => 'OfferController@showOffersByUser'
 ]);

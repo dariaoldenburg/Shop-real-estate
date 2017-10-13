@@ -2,18 +2,18 @@
     <div class="register-page__form"><h1 class="register-page__title">Register</h1>
         <div class="form">
             <div class="input"><input type="text" class="input__element"
-                                      id="login" value=""
+                                      id="login" ng-model="login"
                                       placeholder="Login"></div>
             <div class="input"><input type="number" class="input__element"
-                                      id="phone" value=""
+                                      id="phone" ng-model="phone"
                                       placeholder="Phone"></div>
             <div class="input"><input type="password" class="input__element"
-                                      id="password" value=""
+                                      id="password" ng-model="password"
                                       placeholder="Password"></div>
             <div class="input"><input type="password" class="input__element"
-                                      id="password_again" value=""
+                                      id="password_again" ng-model="password"
                                       placeholder="Repeat password"></div>
         </div>
-        <div class="register-page__button register-page__button_disabled">Register</div>
+        <div ng-class="{'register-page__button': 1 === 1, 'register-page__button_disabled': !buttonEnabled}" ng-click="register()">Register</div>
     </div>
 </div>

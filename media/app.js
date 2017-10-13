@@ -98,7 +98,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
             delete $httpProvider.defaults.headers.common["X-Requeste    d-With"];
             $httpProvider.defaults.headers.common["Accept"] = "application/json";
             $httpProvider.defaults.headers.common["Content-Type"] = "application/json";
-            $httpProvider.interceptors.push(['$q', 'MessagesService', 'alertify', '$rootScope', '$state', function ($q, MessagesService, alertify, $rootScope, $state) {
+            $httpProvider.interceptors.push(['$q', 'alertify', '$rootScope', '$state', function ($q, alertify, $rootScope, $state) {
                 return {
                     'responseError': function (response) {
                         if(response.status === 400) {
@@ -116,14 +116,14 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
                                 // $http.defaults.headers.common.Authorization = '';
                                 // $state.go('nav.login');
                             }
-                            MessagesService.showMessage(response.data);
+                            // MessagesService.showMessage(response.data);
                         }
                         if(response.status === 401) {
                             if(response.data.error == 'invalid_credentials'){
                                 var msg = {
                                     error: 'Podano błędny email lub hasło'
                                 };
-                                MessagesService.showMessage(msg);
+                                // MessagesService.showMessage(msg);
                                 $state.go('nav.login');
                             }
                             console.error("Brak autoryzacji");
@@ -135,7 +135,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
                     response: function (response) {
                         if(response.status === 200 && typeof response.data.success !== 'undefined') {
-                            MessagesService.messageSuccess(response.data);
+                            // MessagesService.messageSuccess(response.data);
                         }
                         return response;
                     }

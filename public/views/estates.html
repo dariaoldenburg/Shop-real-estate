@@ -28,44 +28,25 @@
         </div>
     </div>
     <h1 class="offers__title">Last seen offers</h1>
-    <div class="offer-box">
-        <div class="offer-box__photo"><img src="https://i.ytimg.com/vi/vUKlnOzHFTs/maxresdefault.jpg"></div>
-        <div>
-            <div class="offer-box__info">
-                <div><b>Wenecjanska 8</b></div>
-                <div>Awesome apartment!</div>
-                <div><!-- react-text: 42 -->30<!-- /react-text --><!-- react-text: 43 --> m2<!-- /react-text --></div>
-            </div>
-            <div class="offer-box__buttons">
-                <div class="offer-box__button offer-box__button_green">Buy</div><!-- react-text: 46 -->
-                <!-- /react-text --><!-- react-text: 47 --><!-- /react-text --><!-- react-text: 48 -->
-                <!-- /react-text --></div>
-        </div>
-    </div>
+
     <h1 class="offers__title">All offers</h1>
-    <div class="offer-box">
-        <div class="offer-box__photo"><img src="https://i.ytimg.com/vi/vUKlnOzHFTs/maxresdefault.jpg"></div>
-        <div>
-            <div class="offer-box__info">
-                <div><b>Wenecjanska 8</b></div>
-                <div>Awesome apartment!</div>
-                <div><!-- react-text: 59 -->30<!-- /react-text --><!-- react-text: 60 --> m2<!-- /react-text --></div>
-            </div>
-            <div class="offer-box__buttons">
-                <div class="offer-box__button offer-box__button_green">Buy</div><!-- react-text: 63 -->
-                <!-- /react-text --><!-- react-text: 64 --><!-- /react-text --><!-- react-text: 65 -->
-                <!-- /react-text --></div>
+
+    <div class="offer-box" ng-repeat="offer in estates" ng-cloak>
+        <div class="offer-box__photo">
+            <img ng-src="[[ offer.images ]]">
         </div>
-    </div>
-    <div class="offer-box">
-        <div class="offer-box__photo"><img src="https://i.ytimg.com/vi/vUKlnOzHFTs/maxresdefault.jpg"></div>
         <div>
             <div class="offer-box__info">
-                <div><b>Wenecjanska 8</b></div>
-                <div>Awesome apartment!</div>
-                <div><!-- react-text: 75 -->30<!-- /react-text --><!-- react-text: 76 --> m2<!-- /react-text --></div>
+                <div><b>[[ offer.street ]]</b></div>
+                <div>[[ offer.description ]]</div>
+                <div>[[ offer.apartment_area ]] m2</div>
             </div>
-            <div class="offer-box__buttons"><!-- react-text: 78 --><!-- /react-text -->
+
+            <div class="offer-box__buttons" ng-if="userId !== offer.user_id">
+                <div class="offer-box__button offer-box__button_green">Buy</div>
+            </div>
+
+            <div class="offer-box__buttons" ng-if="userId === offer.user_id">
                 <div class="offer-box__button offer-box__button_blue">Set sold</div>
                 <a href="/edit-offer">
                     <div class="offer-box__button offer-box__button_grey">Edit</div>
@@ -74,18 +55,5 @@
             </div>
         </div>
     </div>
-    <div class="offer-box">
-        <div class="offer-box__photo"><img src="https://i.ytimg.com/vi/vUKlnOzHFTs/maxresdefault.jpg"></div>
-        <div>
-            <div class="offer-box__info">
-                <div><b>Wenecjanska 8</b></div>
-                <div>Awesome apartment!</div>
-                <div><!-- react-text: 92 -->30<!-- /react-text --><!-- react-text: 93 --> m2<!-- /react-text --></div>
-            </div>
-            <div class="offer-box__buttons">
-                <div class="offer-box__button offer-box__button_green">Buy</div><!-- react-text: 96 -->
-                <!-- /react-text --><!-- react-text: 97 --><!-- /react-text --><!-- react-text: 98 -->
-                <!-- /react-text --></div>
-        </div>
-    </div>
+
 </div>
