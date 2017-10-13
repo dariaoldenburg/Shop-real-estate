@@ -43,7 +43,7 @@
             </div>
 
             <div class="offer-box__buttons" ng-if="userId !== offer.user_id">
-                <div class="offer-box__button offer-box__button_green">Buy</div>
+                <div class="offer-box__button offer-box__button_green" ng-click="buy(offer)">Buy</div>
             </div>
 
             <div class="offer-box__buttons" ng-if="userId === offer.user_id">

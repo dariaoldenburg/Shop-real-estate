@@ -35,5 +35,17 @@
       });
     };
 
+    self.buy = function (senderID, recipientID, offerID) {
+      return $http({
+        method: 'post',
+        url: '/api/messages',
+        data: {
+          sender_id: senderID,
+          recipient_id: recipientID,
+          offer_id: offerID
+        }
+      });
+    };
+
   }
 }());

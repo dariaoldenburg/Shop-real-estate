@@ -15,8 +15,11 @@
       });
 
     $scope.setSold = function (offerID) {
-      console.log(offerID);
       EstatesService.setSold(offerID);
+    };
+
+    $scope.buy = function (offer) {
+      EstatesService.buy($scope.userId, offer.user_id, offer.id);
     }
   }
 }());

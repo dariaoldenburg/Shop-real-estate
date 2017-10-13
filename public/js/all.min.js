@@ -221,8 +221,11 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
       });
 
     $scope.setSold = function (offerID) {
-      console.log(offerID);
       EstatesService.setSold(offerID);
+    };
+
+    $scope.buy = function (offer) {
+      EstatesService.buy($scope.userId, offer.user_id, offer.id);
     }
   }
 }());
@@ -349,6 +352,18 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
         url: '/api/offers/' + offerID + '/status',
         data: {
           status: true
+        }
+      });
+    };
+
+    self.buy = function (senderID, recipientID, offerID) {
+      return $http({
+        method: 'post',
+        url: '/api/messages',
+        data: {
+          sender_id: senderID,
+          recipient_id: recipientID,
+          offer_id: offerID
         }
       });
     };
