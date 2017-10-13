@@ -189,6 +189,43 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
     }
 }());
 (function() {
+  'use strict';
+
+  angular
+    .module('application')
+    .controller('addEstateController', AddEstateController);
+
+  function AddEstateController($scope, EstatesService, AuthService) {
+    $scope.city = '';
+    $scope.street = '';
+    $scope.price = '';
+    $scope.rooms = '';
+    $scope.surface = '';
+    $scope.floor = '';
+    $scope.balcony = false;
+    $scope.description = '';
+
+    $scope.buttonEnabled = true;
+
+    $scope.addEstate = function () {
+      EstatesService.addEstate({
+        city: $scope.city,
+        street: $scope.street,
+        price: $scope.price,
+        rooms: $scope.rooms,
+        surface: $scope.surface,
+        floor: $scope.floor,
+        balcony: $scope.balcony,
+        description: $scope.description,
+        userID: AuthService.userID,
+      })
+        .then(function (response) {
+          console.log(response);
+        })
+    }
+  }
+}());
+(function() {
     'use strict';
 
     angular
@@ -211,10 +248,10 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
     .module('application')
     .controller('EstatesController', EstatesController);
 
-  function EstatesController($scope, EstatesService, FilterService) {
+  function EstatesController($scope, EstatesService, FilterService, AuthService) {
     $scope.estates = [];
     $scope.filteredEstates = [];
-    $scope.userId = 2;
+    $scope.userId = AuthService.userID;
     $scope.filters = Object.assign({}, FilterService.filters);
 
     EstatesService.fetchAllEstates()
@@ -267,72 +304,70 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
   }
 }());
 (function () {
-    'use strict';
+  'use strict';
 
-    angular
-        .module('application')
-        .directive("fileUploader", [ '$rootScope', 'FileUploadService', function ($rootScope, FileUploadService) {
-        return {
-            scope: false,
-            link: function (scope, element) {
-                element.bind('change', function (evt) {
-                    scope.$apply(function () {
-                        if ( evt.target.files.length === 0 ) {
-                            return;
-                        }
-                        FileUploadService.uploadFile(evt.target.files[0])
-                            .then(function (response) {
-                                response = response.data;
-                                if ( response.success ) {
-                                    $rootScope.$broadcast('updateNotificationImage', {
-                                        image: response.url
-                                    });
-                                }
-                            });
-                    });
+  angular
+    .module('application')
+    .directive("fileUploader", ['$rootScope', 'EstatesService', function ($rootScope, EstatesService) {
+      return {
+        scope: false,
+        link: function (scope, element) {
+          element.bind('change', function (evt) {
+            scope.$apply(function () {
+              if (evt.target.files.length === 0) {
+                return;
+              }
+              EstatesService.sendPhoto(evt.target.files[0])
+                .then(function (response) {
+                  response = response.data;
+                  if (response.success) {
+                    EstatesService.loadCurrentPhoto(response.url);
+                  }
                 });
-            }
+            });
+          });
         }
-    } ]);
+      }
+    }]);
 })();
+(function () {
+  'use strict';
 
-(function() {
-    'use strict';
+  angular
+    .module('application')
+    .service('AuthService', AuthService);
 
-    angular
-        .module('application')
-        .service('AuthService', AuthService);
+  function AuthService($http) {
+    var self = this;
+    self.userID = 2;
 
-    function AuthService($http) {
-        var self = this;
+    self.remindPassword = function (email) {
+      return $http({
+        method: 'POST',
+        url: 'api/password/email',
+        data: {
+          email: email
+        }
+      });
+    };
 
-        self.remindPassword = function (email) {
-            return $http({
-                method: 'POST',
-                url: 'api/password/email',
-                data: {
-                    email: email
-                }
-            });
-        };
+    self.resetPassword = function (credentials) {
+      return $http({
+        method: 'POST',
+        url: 'api/password/reset',
+        data: credentials
+      });
+    };
 
-        self.resetPassword = function (credentials) {
-            return $http({
-                method: 'POST',
-                url: 'api/password/reset',
-                data: credentials
-            });
-        };
+    self.settingsAccount = function (data) {
+      return $http({
+        method: 'POST',
+        url: 'api/user/settingsAccount',
+        data: data
+      });
+    };
 
-        self.settingsAccount = function (data) {
-            return $http({
-                method: 'POST',
-                url: 'api/user/settingsAccount',
-                data: data
-            });
-        };
-
-    }
+  }
 }());
 (function() {
   'use strict';
@@ -343,11 +378,48 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
   function EstatesService($http) {
     var self = this;
+    self.currentPhoto = '';
 
     self.fetchAllEstates = function () {
       return $http({
         method: 'GET',
         url: '/api/offers'
+      });
+    };
+
+    self.sendPhoto = function (photo) {
+      var updateData = new FormData();
+      updateData.append('file', photo);
+
+      return $http({
+        method: 'POST',
+        data: updateData,
+        url: '/api/upload',
+        headers: {'Content-Type': undefined }
+      });
+    };
+
+    self.loadCurrentPhoto = function (url) {
+      console.log(url);
+      self.currentPhoto = url;
+    };
+
+    self.addEstate = function (data) {
+      return $http({
+        method: 'POST',
+        url: '/api/offers',
+        data: {
+          city: data.city || '',
+          street: data.street || '',
+          images: self.currentPhoto,
+          no_rooms: data.rooms || '',
+          apartment_area: data.surface || '',
+          floors: data.floor || '',
+          balcony: data.balcony || false,
+          description: data.description || '',
+          price: data.price || '',
+          user_id: data.userID || '',
+        }
       });
     };
 

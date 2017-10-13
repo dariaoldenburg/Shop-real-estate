@@ -5,10 +5,10 @@
     .module('application')
     .controller('EstatesController', EstatesController);
 
-  function EstatesController($scope, EstatesService, FilterService) {
+  function EstatesController($scope, EstatesService, FilterService, AuthService) {
     $scope.estates = [];
     $scope.filteredEstates = [];
-    $scope.userId = 2;
+    $scope.userId = AuthService.userID;
     $scope.filters = Object.assign({}, FilterService.filters);
 
     EstatesService.fetchAllEstates()

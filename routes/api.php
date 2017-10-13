@@ -80,3 +80,8 @@ Route::put('/messages/{message}', [
 Route::delete('/messages/{message}', [
     'uses' => 'MessageController@destroy'
 ]);
+
+Route::post('/upload', [
+    'uses' => 'UploaderController@uploadAction',
+    'as'   => 'upload.action'
+]);

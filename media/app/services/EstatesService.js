@@ -7,11 +7,48 @@
 
   function EstatesService($http) {
     var self = this;
+    self.currentPhoto = '';
 
     self.fetchAllEstates = function () {
       return $http({
         method: 'GET',
         url: '/api/offers'
+      });
+    };
+
+    self.sendPhoto = function (photo) {
+      var updateData = new FormData();
+      updateData.append('file', photo);
+
+      return $http({
+        method: 'POST',
+        data: updateData,
+        url: '/api/upload',
+        headers: {'Content-Type': undefined }
+      });
+    };
+
+    self.loadCurrentPhoto = function (url) {
+      console.log(url);
+      self.currentPhoto = url;
+    };
+
+    self.addEstate = function (data) {
+      return $http({
+        method: 'POST',
+        url: '/api/offers',
+        data: {
+          city: data.city || '',
+          street: data.street || '',
+          images: self.currentPhoto,
+          no_rooms: data.rooms || '',
+          apartment_area: data.surface || '',
+          floors: data.floor || '',
+          balcony: data.balcony || false,
+          description: data.description || '',
+          price: data.price || '',
+          user_id: data.userID || '',
+        }
       });
     };
 
