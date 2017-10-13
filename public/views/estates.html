@@ -2,28 +2,26 @@
     <div class="filter-panel">
         <div class="filter-panel__box">
             <div class="filter-panel__label">Floor</div>
-            <input type="number" value="" class="filter-panel__input" placeholder="Floor"></div>
+            <input type="number" value="" class="filter-panel__input" placeholder="Floor" ng-model="filters.floor" ng-change="updateFilter('floor')"></div>
         <div class="filter-panel__box">
             <div class="filter-panel__label">Price</div>
-            <div class="filter-panel__inputs-box"><input type="number" value="" class="filter-panel__input"
-                                                         placeholder="Price from"><input type="number" value=""
-                                                                                         class="filter-panel__input"
-                                                                                         placeholder="Price to"></div>
+            <div class="filter-panel__inputs-box">
+                <input type="number" class="filter-panel__input" placeholder="Price from" ng-model="filters.priceFrom" ng-change="updateFilter('priceFrom')">
+                <input type="number" class="filter-panel__input" placeholder="Price to" ng-model="filters.priceTo" ng-change="updateFilter('priceTo')">
+            </div>
         </div>
         <div class="filter-panel__box">
             <div class="filter-panel__label">Surface</div>
-            <div class="filter-panel__inputs-box"><input type="number" value="" class="filter-panel__input"
-                                                         placeholder="Minimum surface"><input type="number" value=""
-                                                                                              class="filter-panel__input"
-                                                                                              placeholder="Maximum Surface">
+            <div class="filter-panel__inputs-box">
+                <input type="number" class="filter-panel__input" placeholder="Minimum surface" ng-model="filters.surfaceFrom" ng-change="updateFilter('surfaceFrom')">
+                <input type="number" class="filter-panel__input" placeholder="Maximum Surface" ng-model="filters.surfaceTo" ng-change="updateFilter('surfaceTo')">
             </div>
         </div>
         <div class="filter-panel__box">
             <div class="filter-panel__label">Rooms</div>
-            <div class="filter-panel__inputs-box"><input type="number" value="" class="filter-panel__input"
-                                                         placeholder="Minimum rooms"><input type="number" value=""
-                                                                                            class="filter-panel__input"
-                                                                                            placeholder="Maximum rooms">
+            <div class="filter-panel__inputs-box">
+                <input type="number" class="filter-panel__input" placeholder="Minimum rooms" ng-model="filters.roomsFrom" ng-change="updateFilter('roomsFrom')">
+                <input type="number" class="filter-panel__input" placeholder="Maximum rooms" ng-model="filters.roomsTo" ng-change="updateFilter('roomsTo')">
             </div>
         </div>
     </div>
@@ -31,7 +29,7 @@
 
     <h1 class="offers__title">All offers</h1>
 
-    <div class="offer-box" ng-repeat="offer in estates" ng-cloak>
+    <div class="offer-box" ng-repeat="offer in filteredEstates" ng-cloak>
         <div class="offer-box__photo">
             <img ng-src="[[ offer.images ]]">
         </div>

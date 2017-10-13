@@ -211,13 +211,16 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
     .module('application')
     .controller('EstatesController', EstatesController);
 
-  function EstatesController($scope, EstatesService) {
+  function EstatesController($scope, EstatesService, FilterService) {
     $scope.estates = [];
+    $scope.filteredEstates = [];
     $scope.userId = 2;
+    $scope.filters = Object.assign({}, FilterService.filters);
 
     EstatesService.fetchAllEstates()
       .then(function (response) {
         $scope.estates = response.data.offers || [];
+        $scope.filteredEstates = response.data.offers || [];
       });
 
     $scope.setSold = function (offerID) {
@@ -231,6 +234,14 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
     $scope.remove = function (offerID) {
       EstatesService.remove(offerID);
     };
+
+    $scope.updateFilter = function(name) {
+      FilterService.updateFilter(name, $scope.filters[name]);
+    };
+
+    $scope.$on(FilterService.status.FILTERS_UPDATED, function(filters) {
+      $scope.filteredEstates = FilterService.filterList($scope.estates);
+    })
   }
 }());
 (function() {
@@ -379,5 +390,63 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
       });
     };
 
+  }
+}());
+(function() {
+  'use strict';
+
+  angular
+    .module('application')
+    .service('FilterService', FilterService);
+
+  function FilterService($rootScope) {
+    var self = this;
+
+    self.status = {
+      FILTERS_UPDATED: 'FILTERS_UPDATED'
+    };
+
+    self.filters = {
+      floor: null,
+      priceFrom: null,
+      priceTo: null,
+      surfaceFrom: null,
+      surfaceTo: null,
+      roomsFrom: null,
+      roomsTo: null
+    };
+
+    self.updateFilter = function (name, value) {
+      self.filters[name] = value;
+      $rootScope.$broadcast(self.status.FILTERS_UPDATED, self.filters);
+    };
+
+    self.filterList = function (list) {
+      return list.filter(function (item) {
+        var f = self.filters;
+        if ( f.floor && item.floors !== f.floor ) {
+          return false;
+        }
+        if ( f.priceFrom && item.price < f.priceFrom ) {
+          return false;
+        }
+        if ( f.surfaceFrom && item.apartment_area < f.surfaceFrom ) {
+          return false;
+        }
+        if ( f.roomsFrom && item.no_rooms < f.roomsFrom ) {
+          return false;
+        }
+        if ( f.priceTo && item.price > f.priceTo ) {
+          return false;
+        }
+        if ( f.surfaceTo && item.apartment_area > f.surfaceTo ) {
+          return false;
+        }
+        if ( f.roomsTo && item.no_rooms > f.roomsTo ) {
+          return false;
+        }
+        return true;
+      })
+    }
   }
 }());
