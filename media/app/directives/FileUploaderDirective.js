@@ -17,6 +17,7 @@
                   response = response.data;
                   if (response.success) {
                     EstatesService.loadCurrentPhoto(response.url);
+                    $rootScope.$broadcast(EstatesService.status.PHOTO_UPLOADED);
                   }
                 });
             });

@@ -148,6 +148,34 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
         }
     ]);
+(function () {
+  'use strict';
+
+  angular
+    .module('application')
+    .directive("fileUploader", ['$rootScope', 'EstatesService', function ($rootScope, EstatesService) {
+      return {
+        scope: false,
+        link: function (scope, element) {
+          element.bind('change', function (evt) {
+            scope.$apply(function () {
+              if (evt.target.files.length === 0) {
+                return;
+              }
+              EstatesService.sendPhoto(evt.target.files[0])
+                .then(function (response) {
+                  response = response.data;
+                  if (response.success) {
+                    EstatesService.loadCurrentPhoto(response.url);
+                    $rootScope.$broadcast(EstatesService.status.PHOTO_UPLOADED);
+                  }
+                });
+            });
+          });
+        }
+      }
+    }]);
+})();
 (function() {
     'use strict';
 
@@ -204,8 +232,20 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
     $scope.floor = '';
     $scope.balcony = false;
     $scope.description = '';
+    $scope.photoUploaded = false;
 
-    $scope.buttonEnabled = true;
+    $scope.buttonEnabled = false;
+
+    $scope.$watch('[city ,street, price, rooms, surface, floor, balcony, description]', function () {
+      $scope.buttonEnabled =
+        $scope.city
+        && $scope.street
+        && $scope.price
+        && $scope.rooms
+        && $scope.surface
+        && $scope.floor
+        && $scope.description
+    }, true);
 
     $scope.addEstate = function () {
       EstatesService.addEstate({
@@ -310,33 +350,6 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
   angular
     .module('application')
-    .directive("fileUploader", ['$rootScope', 'EstatesService', function ($rootScope, EstatesService) {
-      return {
-        scope: false,
-        link: function (scope, element) {
-          element.bind('change', function (evt) {
-            scope.$apply(function () {
-              if (evt.target.files.length === 0) {
-                return;
-              }
-              EstatesService.sendPhoto(evt.target.files[0])
-                .then(function (response) {
-                  response = response.data;
-                  if (response.success) {
-                    EstatesService.loadCurrentPhoto(response.url);
-                  }
-                });
-            });
-          });
-        }
-      }
-    }]);
-})();
-(function () {
-  'use strict';
-
-  angular
-    .module('application')
     .service('AuthService', AuthService);
 
   function AuthService($http) {
@@ -380,6 +393,9 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
   function EstatesService($http) {
     var self = this;
+    self.status = {
+      PHOTO_UPLOADED: 'PHOTO_UPLOADED'
+    };
     self.currentPhoto = '';
 
     self.fetchAllEstates = function () {

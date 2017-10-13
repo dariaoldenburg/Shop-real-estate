@@ -14,8 +14,20 @@
     $scope.floor = '';
     $scope.balcony = false;
     $scope.description = '';
+    $scope.photoUploaded = false;
 
-    $scope.buttonEnabled = true;
+    $scope.buttonEnabled = false;
+
+    $scope.$watch('[city ,street, price, rooms, surface, floor, balcony, description]', function () {
+      $scope.buttonEnabled =
+        $scope.city
+        && $scope.street
+        && $scope.price
+        && $scope.rooms
+        && $scope.surface
+        && $scope.floor
+        && $scope.description
+    }, true);
 
     $scope.addEstate = function () {
       EstatesService.addEstate({

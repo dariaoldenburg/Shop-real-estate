@@ -7,6 +7,9 @@
 
   function EstatesService($http) {
     var self = this;
+    self.status = {
+      PHOTO_UPLOADED: 'PHOTO_UPLOADED'
+    };
     self.currentPhoto = '';
 
     self.fetchAllEstates = function () {
