@@ -5,7 +5,7 @@
     .module('application')
     .controller('addEstateController', AddEstateController);
 
-  function AddEstateController($scope, EstatesService, AuthService) {
+  function AddEstateController($scope, EstatesService, AuthService, $state) {
     $scope.city = '';
     $scope.street = '';
     $scope.price = '';
@@ -30,7 +30,9 @@
         userID: AuthService.userID,
       })
         .then(function (response) {
-          console.log(response);
+          if ( response.data.success ) {
+            $state.go('estates');
+          }
         })
     }
   }
