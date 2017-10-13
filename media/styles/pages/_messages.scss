@@ -1,0 +1,18 @@
+.messages {
+    height: 100%;
+    width: 100%;
+
+    &__title {
+        margin-left: 18%;
+    }
+
+    &__message {
+        width: 60%;
+        background: white;
+        margin: 20px auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+    }
+}

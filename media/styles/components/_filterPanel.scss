@@ -1,0 +1,39 @@
+.filter-panel {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: cornflowerblue;
+
+    &__box {
+        margin: 0 20px;
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
+
+    &__label {
+        color: white;
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-right: 10px;
+    }
+
+    &__input {
+        margin-right: 10px;
+        height: 20px;
+        border: none;
+        background: white;
+        padding: 10px;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &__inputs-box {
+        display: flex;
+        flex-direction: column;
+    }
+}

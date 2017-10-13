@@ -1,0 +1,22 @@
+.alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 20px 40px;
+    color: white;
+    background-color: darkslateblue;
+    opacity: 0;
+    transition: opacity .3s linear;
+
+    &_visible {
+        opacity: 1;
+    }
+
+    &_error {
+        background-color: red;
+    }
+
+    &_success {
+        background-color: green;
+    }
+}

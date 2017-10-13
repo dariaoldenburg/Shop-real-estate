@@ -1,0 +1,30 @@
+.form {
+    width: 100%;
+    background-color: white;
+}
+
+.input {
+    width: 80%;
+    margin: 40px 10%;
+
+    &__element {
+        width: 100%;
+        padding: 15px 10px;
+        border: 1px rgba(0, 0, 0, .5) solid;
+        transition: all .3s linear;
+
+        &:focus {
+            outline: none;
+        }
+
+        &_invalid {
+            border-color: red;
+        }
+    }
+
+    &__label {
+        user-select: none;
+        cursor: default;
+        font-size: .8rem;
+    }
+}

@@ -1,0 +1,17 @@
+.report {
+    height: 100%;
+    width: 100%;
+
+    &__title {
+        margin-left: 18%;
+        color: grey;
+        font-size: 1.8rem;
+    }
+
+    &__separator {
+        background-color: rgba(0, 0, 0, .3);
+        height: 1px;
+        width: 100%;
+        margin: 20px auto;
+    }
+}
