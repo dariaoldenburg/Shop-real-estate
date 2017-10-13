@@ -13,5 +13,10 @@
       .then(function (response) {
         $scope.estates = response.data.offers || [];
       });
+
+    $scope.setSold = function (offerID) {
+      console.log(offerID);
+      EstatesService.setSold(offerID);
+    }
   }
 }());

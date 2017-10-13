@@ -219,6 +219,11 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
       .then(function (response) {
         $scope.estates = response.data.offers || [];
       });
+
+    $scope.setSold = function (offerID) {
+      console.log(offerID);
+      EstatesService.setSold(offerID);
+    }
   }
 }());
 (function() {
@@ -324,7 +329,27 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
     self.fetchAllEstates = function () {
       return $http({
         method: 'GET',
-        url: 'api/offers'
+        url: '/api/offers'
+      });
+    };
+
+    self.setSold = function (offerID) {
+      return $http({
+        method: 'PUT',
+        url: '/api/offers/' + offerID + '/status',
+        data: {
+          status: false
+        }
+      });
+    };
+
+    self.unsetSold = function (offerID) {
+      return $http({
+        method: 'PUT',
+        url: '/api/offers/' + offerID + '/status',
+        data: {
+          status: true
+        }
       });
     };
 
