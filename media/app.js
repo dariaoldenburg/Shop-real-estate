@@ -42,7 +42,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
             $authProvider.loginUrl = '/api/authenticate';
 
-            $urlRouterProvider.otherwise('/');
+            $urlRouterProvider.otherwise('/estates');
 
             $stateProvider
                 .state('register',{

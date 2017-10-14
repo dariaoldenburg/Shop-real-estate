@@ -1,14 +1,5 @@
 <div class="messages"><h1 class="messages__title">Messages</h1>
-    <div class="messages__message"><h2>Olden</h2>
-        <div>Call me 432 534 653</div>
-    </div>
-    <div class="messages__message"><h2>John</h2>
-        <div>Call me 343 534 653</div>
-    </div>
-    <div class="messages__message"><h2>Brit</h2>
-        <div>Call me 432 654 653</div>
-    </div>
-    <div class="messages__message"><h2>Jessie</h2>
-        <div>Call me 132 534 653</div>
+    <div class="messages__message" ng-repeat="message in messages">
+        <h2>[[ message.message ]]</h2>
     </div>
 </div>

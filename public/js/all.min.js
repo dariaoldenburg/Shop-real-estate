@@ -43,7 +43,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
             $authProvider.loginUrl = '/api/authenticate';
 
-            $urlRouterProvider.otherwise('/');
+            $urlRouterProvider.otherwise('/estates');
 
             $stateProvider
                 .state('register',{
@@ -366,6 +366,21 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
   angular
     .module('application')
+    .controller('MessagesController', MessagesController);
+
+  function MessagesController($scope, MessagesService, AuthService) {
+    $scope.messages = [];
+    MessagesService.fetchAllMessages(AuthService.userID)
+      .then(function (response) {
+        $scope.messages = response.data.messages;
+      });
+  }
+}());
+(function() {
+  'use strict';
+
+  angular
+    .module('application')
     .controller('RegisterController', RegisterController);
 
   function RegisterController($scope, AuthService, $rootScope) {
@@ -420,7 +435,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
   function AuthService($http) {
     var self = this;
-    self.userID = 2;
+    self.userID = 3;
 
     self.remindPassword = function (email) {
       return $http({
@@ -629,6 +644,24 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
         }
         return true;
       })
+    }
+  }
+}());
+(function() {
+  'use strict';
+
+  angular
+    .module('application')
+    .service('MessagesService', MessagesService);
+
+  function MessagesService($http) {
+    var self = this;
+
+    self.fetchAllMessages = function (id) {
+      return $http({
+        method: 'GET',
+        url: '/api/messages/' + id
+      });
     }
   }
 }());

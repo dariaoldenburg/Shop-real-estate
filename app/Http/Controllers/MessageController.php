@@ -100,7 +100,7 @@ class MessageController extends Controller
         }
 
         return response()->json([
-            'offers' => $messages
+            'messages' => $messages
         ], 200);
 
     }

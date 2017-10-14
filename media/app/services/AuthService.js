@@ -7,7 +7,7 @@
 
   function AuthService($http) {
     var self = this;
-    self.userID = 2;
+    self.userID = 3;
 
     self.remindPassword = function (email) {
       return $http({
