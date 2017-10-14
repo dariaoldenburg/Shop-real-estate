@@ -6,6 +6,8 @@
     .controller('HeaderController', HeaderController);
 
   function HeaderController($scope, $rootScope) {
-    $scope.usersVisible = $rootScope.currentUser.role === 'admin';
+    $scope.usersVisible = $rootScope.currentUser
+      ? $rootScope.currentUser.role === 'admin'
+      : false;
   }
 }());

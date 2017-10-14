@@ -175,6 +175,46 @@
     .add-offer__button:hover {
       background: #0b610c; }
 
+.login-page {
+  width: 100%;
+  height: 100%;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center; }
+  .login-page__form {
+    width: 600px;
+    background: white; }
+  .login-page__title {
+    margin-left: 10%;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: default; }
+  .login-page__button {
+    margin-top: 15px;
+    background: #FEDCD2;
+    color: #535453;
+    padding: 10px 20px;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    cursor: pointer;
+    transition: opacity .3s linear, background .15s linear;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-transform: uppercase; }
+    .login-page__button:hover {
+      background: #FEB4B6; }
+
 .edit-offer {
   width: 100%;
   height: 100%;
@@ -241,7 +281,7 @@ h1 {
   padding-top: 70px;
   box-sizing: border-box; }
 
-.login-page {
+.password-page {
   width: 100%;
   height: 100%;
   display: -webkit-flex;
@@ -253,17 +293,17 @@ h1 {
   -webkit-align-items: center;
   -ms-flex-align: center;
   align-items: center; }
-  .login-page__form {
+  .password-page__form {
     width: 600px;
     background: white; }
-  .login-page__title {
+  .password-page__title {
     margin-left: 10%;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
     cursor: default; }
-  .login-page__button {
+  .password-page__button {
     margin-top: 15px;
     background: #FEDCD2;
     color: #535453;
@@ -278,11 +318,11 @@ h1 {
     -ms-user-select: none;
     user-select: none;
     text-transform: uppercase; }
-    .login-page__button_disabled {
+    .password-page__button_disabled {
       opacity: .5;
       cursor: not-allowed;
       pointer-events: none; }
-    .login-page__button:hover {
+    .password-page__button:hover {
       background: #FEB4B6; }
 
 .messages {

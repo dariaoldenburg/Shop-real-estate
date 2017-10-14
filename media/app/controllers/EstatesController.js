@@ -25,7 +25,8 @@
     };
 
     $scope.remove = function (offerID) {
-      EstatesService.remove(offerID);
+      EstatesService.remove(offerID)
+      ;
     };
 
     $scope.updateFilter = function(name) {

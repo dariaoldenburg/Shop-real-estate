@@ -22,12 +22,13 @@
       });
     };
 
-    self.updatePassword = function (id, password) {
+    self.updatePassword = function (id, password, passwordConfirmation) {
       return $http({
         method: 'PUT',
         url: '/api/users/' + id,
         data: {
-          password: password
+          password: password,
+          password_confirmation: passwordConfirmation
         }
       });
     };

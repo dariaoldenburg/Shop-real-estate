@@ -61,7 +61,7 @@
       })
         .then(function (response) {
           if ( response.data.success ) {
-            $state.go('estates');
+            $state.go('nav.estates');
           }
         })
     }

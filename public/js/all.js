@@ -327,15 +327,27 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
   angular
     .module('application')
-    .controller('UsersController', ChangePasswordController);
+    .controller('ChangePasswordController', ChangePasswordController);
 
-  function ChangePasswordController($scope, $stateParams, UsersService) {
-
+  function ChangePasswordController($scope, $stateParams, UsersService, $state) {
     $scope.idUser = $stateParams.id;
+    $scope.buttonEnabled = false;
+    $scope.password = '';
+    $scope.password_confirmation = '';
+
+    $scope.$watch('[password, password_confirmation]', function () {
+      $scope.buttonEnabled =
+        $scope.password !== ''
+        && $scope.password_confirmation !== ''
+    }, true);
 
     $scope.changePassword = function () {
-      UsersService.updatePassword($scope.idUser, $scope.password);
-    };
+      UsersService.updatePassword($scope.idUser, $scope.password, $scope.password_confirmation)
+        .then(function (response) {
+          console.log(response);
+            $state.go('nav.estates');
+        });
+    }
 
 
   }
@@ -403,7 +415,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
       })
         .then(function (response) {
           if ( response.data.success ) {
-            $state.go('estates');
+            $state.go('nav.estates');
           }
         })
     }
@@ -436,7 +448,8 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
     };
 
     $scope.remove = function (offerID) {
-      EstatesService.remove(offerID);
+      EstatesService.remove(offerID)
+      ;
     };
 
     $scope.updateFilter = function(name) {
@@ -456,7 +469,9 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
     .controller('HeaderController', HeaderController);
 
   function HeaderController($scope, $rootScope) {
-    $scope.usersVisible = $rootScope.currentUser.role === 'admin';
+    $scope.usersVisible = $rootScope.currentUser
+      ? $rootScope.currentUser.role === 'admin'
+      : false;
   }
 }());
 (function() {
@@ -926,12 +941,13 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
       });
     };
 
-    self.updatePassword = function (id, password) {
+    self.updatePassword = function (id, password, passwordConfirmation) {
       return $http({
         method: 'PUT',
         url: '/api/users/' + id,
         data: {
-          password: password
+          password: password,
+          password_confirmation: passwordConfirmation
         }
       });
     };
