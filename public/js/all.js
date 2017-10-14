@@ -361,7 +361,6 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
   function EstatesController($scope, EstatesService, FilterService, AuthService) {
     $scope.estates = [];
     $scope.filteredEstates = [];
-    $scope.userId = AuthService.userID;
     $scope.filters = Object.assign({}, FilterService.filters);
 
     EstatesService.fetchAllEstates()
@@ -615,7 +614,6 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
   function AuthService($http, $auth, $window, $rootScope, $state) {
     var self = this;
-    self.userID = 3;
 
     self.register = function (email, number, password) {
       return $http({
@@ -648,6 +646,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
         $window.localStorage.setItem('user', user);
         $rootScope.authenticated = true;
         $rootScope.currentUser = response.data.user;
+        // self.userID = $rootScope.currentUser.id;
         $state.go('nav.estates');
       });
 

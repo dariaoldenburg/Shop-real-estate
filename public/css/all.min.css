@@ -51,7 +51,7 @@
     background: #ffffff;
     padding: 10px;
     border: 1px solid #535353;
-    color: white; }
+    color: black; }
     .filter-panel__input:focus {
       outline: none; }
   .filter-panel__inputs-box {
@@ -337,7 +337,7 @@ h1 {
     color: grey;
     text-align: right; }
   .offer-box__buttons {
-    width: 300px;
+    width: 360px;
     margin-top: 10px;
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -356,15 +356,8 @@ h1 {
     -ms-user-select: none;
     user-select: none;
     border: 1px solid #535353;
-    text-transform: uppercase; }
-    .offer-box__button_green {
-      background-color: white; }
-    .offer-box__button_blue {
-      background-color: dodgerblue; }
-    .offer-box__button_red {
-      background-color: orangered; }
-    .offer-box__button_grey {
-      background-color: lightslategrey; }
+    text-transform: uppercase;
+    background-color: white; }
     .offer-box__button_disabled {
       opacity: .5; }
 
