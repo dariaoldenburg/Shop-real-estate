@@ -4,13 +4,19 @@ html, body {
 }
 
 body {
-    background: grey;
+    background: #BFD8D2;
     min-height: 100vh;
     font-family: 'Lato', sans-serif;
+    color: #535453;
 }
 
 a {
     text-decoration: none;
+}
+
+h1 {
+    color: #5bc1a5;
+    text-transform: uppercase;
 }
 
 .main-container {

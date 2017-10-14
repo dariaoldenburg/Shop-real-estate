@@ -18,8 +18,8 @@
 
     &__button {
         margin-top: 15px;
-        background: #0fa010;
-        color: white;
+        background: #FEDCD2;
+        color: #535453;
         padding: 10px 20px;
         text-align: center;
         height: 30px;
@@ -27,6 +27,7 @@
         cursor: pointer;
         transition: opacity .3s linear, background .15s linear;
         user-select: none;
+        text-transform: uppercase;
 
         &_disabled {
             opacity: .5;
@@ -35,7 +36,7 @@
         }
 
         &:hover {
-            background: #0b610c;
+            background: #FEB4B6;
         }
     }
 }
