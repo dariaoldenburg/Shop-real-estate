@@ -7,7 +7,6 @@
 
   function AuthService($http, $auth, $window, $rootScope, $state) {
     var self = this;
-    self.userID = 3;
 
     self.register = function (email, number, password) {
       return $http({
@@ -40,6 +39,7 @@
         $window.localStorage.setItem('user', user);
         $rootScope.authenticated = true;
         $rootScope.currentUser = response.data.user;
+        // self.userID = $rootScope.currentUser.id;
         $state.go('nav.estates');
       });
 

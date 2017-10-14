@@ -8,7 +8,6 @@
   function EstatesController($scope, EstatesService, FilterService, AuthService) {
     $scope.estates = [];
     $scope.filteredEstates = [];
-    $scope.userId = AuthService.userID;
     $scope.filters = Object.assign({}, FilterService.filters);
 
     EstatesService.fetchAllEstates()
