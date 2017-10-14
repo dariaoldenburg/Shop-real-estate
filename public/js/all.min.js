@@ -148,6 +148,34 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
         }
     ]);
+(function () {
+  'use strict';
+
+  angular
+    .module('application')
+    .directive("fileUploader", ['$rootScope', 'EstatesService', function ($rootScope, EstatesService) {
+      return {
+        scope: false,
+        link: function (scope, element) {
+          element.bind('change', function (evt) {
+            scope.$apply(function () {
+              if (evt.target.files.length === 0) {
+                return;
+              }
+              EstatesService.sendPhoto(evt.target.files[0])
+                .then(function (response) {
+                  response = response.data;
+                  if (response.success) {
+                    EstatesService.loadCurrentPhoto(response.url);
+                    $rootScope.$broadcast(EstatesService.status.PHOTO_UPLOADED);
+                  }
+                });
+            });
+          });
+        }
+      }
+    }]);
+})();
 (function() {
     'use strict';
 
@@ -366,6 +394,34 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
   angular
     .module('application')
+    .controller('LoginController', LoginController);
+
+  function LoginController($scope, AuthService, $state) {
+    $scope.email = '';
+    $scope.password = '';
+    $scope.buttonEnabled = false;
+
+    $scope.$watch('[email, password]', function () {
+      $scope.buttonEnabled =
+        $scope.email !== ''
+        && $scope.password !== ''
+    }, true);
+
+    $scope.login = function () {
+      AuthService.login($scope.email, $scope.password)
+        .then(function (response) {
+          if ( response.data.token ) {
+            $state.go('estates');
+          }
+        })
+    }
+  }
+}());
+(function() {
+  'use strict';
+
+  angular
+    .module('application')
     .controller('MessagesController', MessagesController);
 
   function MessagesController($scope, MessagesService, AuthService) {
@@ -410,34 +466,6 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
     }
   }
 }());
-(function () {
-  'use strict';
-
-  angular
-    .module('application')
-    .directive("fileUploader", ['$rootScope', 'EstatesService', function ($rootScope, EstatesService) {
-      return {
-        scope: false,
-        link: function (scope, element) {
-          element.bind('change', function (evt) {
-            scope.$apply(function () {
-              if (evt.target.files.length === 0) {
-                return;
-              }
-              EstatesService.sendPhoto(evt.target.files[0])
-                .then(function (response) {
-                  response = response.data;
-                  if (response.success) {
-                    EstatesService.loadCurrentPhoto(response.url);
-                    $rootScope.$broadcast(EstatesService.status.PHOTO_UPLOADED);
-                  }
-                });
-            });
-          });
-        }
-      }
-    }]);
-})();
 (function() {
   'use strict';
 
@@ -495,6 +523,17 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
           telephone: number,
           password: password,
           password_confirmation: password
+        }
+      });
+    };
+
+    self.login = function (email, password) {
+      return $http({
+        method: 'POST',
+        url: '/api/authenticate',
+        data: {
+          email: email,
+          password: password,
         }
       });
     }

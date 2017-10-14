@@ -20,6 +20,17 @@
           password_confirmation: password
         }
       });
+    };
+
+    self.login = function (email, password) {
+      return $http({
+        method: 'POST',
+        url: '/api/authenticate',
+        data: {
+          email: email,
+          password: password,
+        }
+      });
     }
 
   }
