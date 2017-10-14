@@ -7,6 +7,8 @@
 
   function UsersController($scope, $rootScope, UsersService) {
     $scope.users = [];
+    $scope.month = 1;
+    $scope.year = 2017;
 
     UsersService.fetchAllUsers($rootScope.currentUser.id)
       .then(function (response) {
