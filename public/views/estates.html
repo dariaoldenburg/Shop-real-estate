@@ -32,17 +32,17 @@
                 <div>[[ offer.apartment_area ]] m2</div>
             </div>
 
-            <div class="offer-box__buttons" ng-if="userId !== offer.user_id">
-                <div class="offer-box__button offer-box__button_green" ng-click="buy(offer)">Buy</div>
+            <div class="offer-box__buttons" ng-if="offer.user_id !== currentUser.id">
+                <div class="offer-box__button" ng-click="buy(offer)">Buy</div>
             </div>
 
-            <div class="offer-box__buttons" ng-if="userId === offer.user_id">
-                <div class="offer-box__button offer-box__button_blue" ng-click="setSold(offer.id)" ng-if="offer.status !== 0">Set sold</div>
-                <div class="offer-box__button offer-box__button_blue" ng-click="setSold(offer.id)" ng-if="offer.status === 0">Set for sale</div>
+            <div class="offer-box__buttons" ng-if="offer.user_id === currentUser.id">
+                <div class="offer-box__button" ng-click="setSold(offer.id)" ng-if="offer.status !== 0">Set sold</div>
+                <div class="offer-box__button" ng-click="setSold(offer.id)" ng-if="offer.status === 0">Set for sale</div>
                 <a ng-href="/#!/edit-estate/[[ offer.id ]]">
-                    <div class="offer-box__button offer-box__button_grey">Edit</div>
+                    <div class="offer-box__button">Edit</div>
                 </a>
-                <div class="offer-box__button offer-box__button_red" ng-click="remove(offer.id)">Remove</div>
+                <div class="offer-box__button" ng-click="remove(offer.id)">Remove</div>
             </div>
         </div>
     </div>
