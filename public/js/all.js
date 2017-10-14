@@ -149,6 +149,296 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
         }
     ]);
 (function() {
+    'use strict';
+
+    angular
+        .module('application')
+        .controller('AddDetailsController', AddDetailsController);
+
+    function AddDetailsController($scope, $state, PageService, AddPageService, $rootScope) {
+        $scope.status = false;
+
+        $scope.addPage = AddPageService.status.addPage;
+        $scope.addPageStep = 1;
+        $rootScope.$broadcast('addPageStep', {
+            addPageStep: $scope.addPageStep
+        });
+
+        $scope.prooflyBranding = 1;
+
+        $scope.addPage = function () {
+            PageService.addPage({
+                name: $scope.namePage,
+                url: $scope.url,
+                utm_source: $scope.utmSource,
+                utm_medium: $scope.utmMedium,
+                proofly_branding: $scope.prooflyBranding,
+                verification: $scope.verification
+            })
+                .then(function(result) {
+                    AddPageService.setStep($scope.addPageStep);
+                    $rootScope.$broadcast('addPageStep', {
+                        addPageStep: AddPageService.status.addPageStep
+                    });
+                    $state.go('nav.addPage.installation', {
+                        pageId: result.data.page.id
+                    });
+                });
+        };
+
+    }
+}());
+(function() {
+  'use strict';
+
+  angular
+    .module('application')
+    .controller('addEstateController', AddEstateController);
+
+  function AddEstateController($scope, EstatesService, AuthService, $state) {
+    $scope.city = '';
+    $scope.street = '';
+    $scope.price = '';
+    $scope.rooms = '';
+    $scope.surface = '';
+    $scope.floor = '';
+    $scope.balcony = false;
+    $scope.description = '';
+    $scope.photoUploaded = false;
+
+    $scope.buttonEnabled = false;
+
+    $scope.$watch('[city ,street, price, rooms, surface, floor, balcony, description]', function () {
+      $scope.buttonEnabled =
+        $scope.city
+        && $scope.street
+        && $scope.price
+        && $scope.rooms
+        && $scope.surface
+        && $scope.floor
+        && $scope.description
+    }, true);
+
+    $scope.addEstate = function () {
+      EstatesService.addEstate({
+        city: $scope.city,
+        street: $scope.street,
+        price: $scope.price,
+        rooms: $scope.rooms,
+        surface: $scope.surface,
+        floor: $scope.floor,
+        balcony: $scope.balcony,
+        description: $scope.description,
+        userID: AuthService.userID,
+      })
+        .then(function (response) {
+          if ( response.data.success ) {
+            $state.go('estates');
+          }
+        })
+    }
+  }
+}());
+(function() {
+    'use strict';
+
+    angular
+        .module('application')
+        .controller('AppController', AppController);
+
+    function AppController($window, $rootScope) {
+
+        if ($window.localStorage.getItem('user')) {
+            var user = $window.localStorage.getItem('user');
+            $rootScope.authenticated = true;
+            $rootScope.currentUser = JSON.parse(user);
+        }
+    }
+}());
+(function() {
+  'use strict';
+
+  angular
+    .module('application')
+    .controller('editEstateController', EditEstateController);
+
+  function EditEstateController($scope, EstatesService, AuthService, $state, $stateParams) {
+    $scope.city = '';
+    $scope.street = '';
+    $scope.price = '';
+    $scope.rooms = '';
+    $scope.surface = '';
+    $scope.floor = '';
+    $scope.balcony = false;
+    $scope.description = '';
+    $scope.id = '';
+
+    $scope.buttonEnabled = false;
+
+    EstatesService.fetchEstateById($stateParams.id)
+      .then(function (response) {
+        var estateData = response.data.offer;
+        $scope.id = estateData.id;
+        $scope.city = estateData.city;
+        $scope.street = estateData.street;
+        $scope.price = estateData.price;
+        $scope.rooms = estateData.no_rooms;
+        $scope.surface = estateData.apartment_area;
+        $scope.floor = estateData.floors;
+        $scope.balcony = estateData.balcony;
+        $scope.description = estateData.description;
+      });
+
+    $scope.$watch('[city ,street, price, rooms, surface, floor, balcony, description]', function () {
+      $scope.buttonEnabled =
+        $scope.city
+        && $scope.street
+        && $scope.price
+        && $scope.rooms
+        && $scope.surface
+        && $scope.floor
+        && $scope.description
+    }, true);
+
+    $scope.updateEstate = function () {
+      EstatesService.updateEstate({
+        id: $scope.id,
+        city: $scope.city,
+        street: $scope.street,
+        price: $scope.price,
+        rooms: $scope.rooms,
+        surface: $scope.surface,
+        floor: $scope.floor,
+        balcony: $scope.balcony,
+        description: $scope.description,
+        userID: AuthService.userID,
+      })
+        .then(function (response) {
+          if ( response.data.success ) {
+            $state.go('estates');
+          }
+        })
+    }
+  }
+}());
+(function() {
+  'use strict';
+
+  angular
+    .module('application')
+    .controller('EstatesController', EstatesController);
+
+  function EstatesController($scope, EstatesService, FilterService, AuthService) {
+    $scope.estates = [];
+    $scope.filteredEstates = [];
+    $scope.userId = AuthService.userID;
+    $scope.filters = Object.assign({}, FilterService.filters);
+
+    EstatesService.fetchAllEstates()
+      .then(function (response) {
+        $scope.estates = response.data.offers || [];
+        $scope.filteredEstates = response.data.offers || [];
+      });
+
+    $scope.setSold = function (offerID) {
+      EstatesService.setSold(offerID);
+    };
+
+    $scope.buy = function (offer) {
+      EstatesService.buy($scope.userId, offer.user_id, offer.id);
+    };
+
+    $scope.remove = function (offerID) {
+      EstatesService.remove(offerID);
+    };
+
+    $scope.updateFilter = function(name) {
+      FilterService.updateFilter(name, $scope.filters[name]);
+    };
+
+    $scope.$on(FilterService.status.FILTERS_UPDATED, function(filters) {
+      $scope.filteredEstates = FilterService.filterList($scope.estates);
+    })
+  }
+}());
+(function() {
+  'use strict';
+
+  angular
+    .module('application')
+    .controller('MessagesController', MessagesController);
+
+  function MessagesController($scope, MessagesService, AuthService) {
+    $scope.messages = [];
+    MessagesService.fetchAllMessages(AuthService.userID)
+      .then(function (response) {
+        $scope.messages = response.data.messages;
+      });
+  }
+}());
+(function() {
+  'use strict';
+
+  angular
+    .module('application')
+    .controller('RegisterController', RegisterController);
+
+  function RegisterController($scope, AuthService, $state) {
+    $scope.email = '';
+    $scope.phone = '';
+    $scope.password = '';
+    $scope.passwordAgain = '';
+    $scope.buttonEnabled = true;
+
+    $scope.$watch('[email, phone, password, passwordAgain]', function () {
+      $scope.buttonEnabled =
+        $scope.phone.toString().length < 10
+        && !(
+          $scope.password !== ''
+          && $scope.passwordAgain !== ''
+          && $scope.password !== $scope.passwordAgain
+        )
+    }, true);
+
+    $scope.register = function () {
+      AuthService.register($scope.email, $scope.phone, $scope.password)
+        .then(function (response) {
+          if ( response.data.success ) {
+            $state.go('login');
+          }
+        })
+    }
+  }
+}());
+(function () {
+  'use strict';
+
+  angular
+    .module('application')
+    .directive("fileUploader", ['$rootScope', 'EstatesService', function ($rootScope, EstatesService) {
+      return {
+        scope: false,
+        link: function (scope, element) {
+          element.bind('change', function (evt) {
+            scope.$apply(function () {
+              if (evt.target.files.length === 0) {
+                return;
+              }
+              EstatesService.sendPhoto(evt.target.files[0])
+                .then(function (response) {
+                  response = response.data;
+                  if (response.success) {
+                    EstatesService.loadCurrentPhoto(response.url);
+                    $rootScope.$broadcast(EstatesService.status.PHOTO_UPLOADED);
+                  }
+                });
+            });
+          });
+        }
+      }
+    }]);
+})();
+(function() {
   'use strict';
 
   angular
@@ -411,283 +701,3 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
     }
   }
 }());
-(function() {
-    'use strict';
-
-    angular
-        .module('application')
-        .controller('AddDetailsController', AddDetailsController);
-
-    function AddDetailsController($scope, $state, PageService, AddPageService, $rootScope) {
-        $scope.status = false;
-
-        $scope.addPage = AddPageService.status.addPage;
-        $scope.addPageStep = 1;
-        $rootScope.$broadcast('addPageStep', {
-            addPageStep: $scope.addPageStep
-        });
-
-        $scope.prooflyBranding = 1;
-
-        $scope.addPage = function () {
-            PageService.addPage({
-                name: $scope.namePage,
-                url: $scope.url,
-                utm_source: $scope.utmSource,
-                utm_medium: $scope.utmMedium,
-                proofly_branding: $scope.prooflyBranding,
-                verification: $scope.verification
-            })
-                .then(function(result) {
-                    AddPageService.setStep($scope.addPageStep);
-                    $rootScope.$broadcast('addPageStep', {
-                        addPageStep: AddPageService.status.addPageStep
-                    });
-                    $state.go('nav.addPage.installation', {
-                        pageId: result.data.page.id
-                    });
-                });
-        };
-
-    }
-}());
-(function() {
-  'use strict';
-
-  angular
-    .module('application')
-    .controller('addEstateController', AddEstateController);
-
-  function AddEstateController($scope, EstatesService, AuthService, $state) {
-    $scope.city = '';
-    $scope.street = '';
-    $scope.price = '';
-    $scope.rooms = '';
-    $scope.surface = '';
-    $scope.floor = '';
-    $scope.balcony = false;
-    $scope.description = '';
-    $scope.photoUploaded = false;
-
-    $scope.buttonEnabled = false;
-
-    $scope.$watch('[city ,street, price, rooms, surface, floor, balcony, description]', function () {
-      $scope.buttonEnabled =
-        $scope.city
-        && $scope.street
-        && $scope.price
-        && $scope.rooms
-        && $scope.surface
-        && $scope.floor
-        && $scope.description
-    }, true);
-
-    $scope.addEstate = function () {
-      EstatesService.addEstate({
-        city: $scope.city,
-        street: $scope.street,
-        price: $scope.price,
-        rooms: $scope.rooms,
-        surface: $scope.surface,
-        floor: $scope.floor,
-        balcony: $scope.balcony,
-        description: $scope.description,
-        userID: AuthService.userID,
-      })
-        .then(function (response) {
-          if ( response.data.success ) {
-            $state.go('estates');
-          }
-        })
-    }
-  }
-}());
-(function() {
-    'use strict';
-
-    angular
-        .module('application')
-        .controller('AppController', AppController);
-
-    function AppController($window, $rootScope) {
-
-        if ($window.localStorage.getItem('user')) {
-            var user = $window.localStorage.getItem('user');
-            $rootScope.authenticated = true;
-            $rootScope.currentUser = JSON.parse(user);
-        }
-    }
-}());
-(function() {
-  'use strict';
-
-  angular
-    .module('application')
-    .controller('editEstateController', EditEstateController);
-
-  function EditEstateController($scope, EstatesService, AuthService, $state, $stateParams) {
-    $scope.city = '';
-    $scope.street = '';
-    $scope.price = '';
-    $scope.rooms = '';
-    $scope.surface = '';
-    $scope.floor = '';
-    $scope.balcony = false;
-    $scope.description = '';
-    $scope.id = '';
-
-    $scope.buttonEnabled = false;
-
-    EstatesService.fetchEstateById($stateParams.id)
-      .then(function (response) {
-        var estateData = response.data.offer;
-        $scope.id = estateData.id;
-        $scope.city = estateData.city;
-        $scope.street = estateData.street;
-        $scope.price = estateData.price;
-        $scope.rooms = estateData.no_rooms;
-        $scope.surface = estateData.apartment_area;
-        $scope.floor = estateData.floors;
-        $scope.balcony = estateData.balcony;
-        $scope.description = estateData.description;
-      });
-
-    $scope.$watch('[city ,street, price, rooms, surface, floor, balcony, description]', function () {
-      $scope.buttonEnabled =
-        $scope.city
-        && $scope.street
-        && $scope.price
-        && $scope.rooms
-        && $scope.surface
-        && $scope.floor
-        && $scope.description
-    }, true);
-
-    $scope.updateEstate = function () {
-      EstatesService.updateEstate({
-        id: $scope.id,
-        city: $scope.city,
-        street: $scope.street,
-        price: $scope.price,
-        rooms: $scope.rooms,
-        surface: $scope.surface,
-        floor: $scope.floor,
-        balcony: $scope.balcony,
-        description: $scope.description,
-        userID: AuthService.userID,
-      })
-        .then(function (response) {
-          if ( response.data.success ) {
-            $state.go('estates');
-          }
-        })
-    }
-  }
-}());
-(function() {
-  'use strict';
-
-  angular
-    .module('application')
-    .controller('EstatesController', EstatesController);
-
-  function EstatesController($scope, EstatesService, FilterService, AuthService) {
-    $scope.estates = [];
-    $scope.filteredEstates = [];
-    $scope.userId = AuthService.userID;
-    $scope.filters = Object.assign({}, FilterService.filters);
-
-    EstatesService.fetchAllEstates()
-      .then(function (response) {
-        $scope.estates = response.data.offers || [];
-        $scope.filteredEstates = response.data.offers || [];
-      });
-
-    $scope.setSold = function (offerID) {
-      EstatesService.setSold(offerID);
-    };
-
-    $scope.buy = function (offer) {
-      EstatesService.buy($scope.userId, offer.user_id, offer.id);
-    };
-
-    $scope.remove = function (offerID) {
-      EstatesService.remove(offerID);
-    };
-
-    $scope.updateFilter = function(name) {
-      FilterService.updateFilter(name, $scope.filters[name]);
-    };
-
-    $scope.$on(FilterService.status.FILTERS_UPDATED, function(filters) {
-      $scope.filteredEstates = FilterService.filterList($scope.estates);
-    })
-  }
-}());
-(function() {
-  'use strict';
-
-  angular
-    .module('application')
-    .controller('MessagesController', MessagesController);
-
-  function MessagesController($scope, MessagesService, AuthService) {
-    $scope.messages = [];
-    MessagesService.fetchAllMessages(AuthService.userID)
-      .then(function (response) {
-        $scope.messages = response.data.messages;
-      });
-  }
-}());
-(function() {
-  'use strict';
-
-  angular
-    .module('application')
-    .controller('RegisterController', RegisterController);
-
-  function RegisterController($scope, AuthService, $state) {
-    $scope.email = '';
-    $scope.phone = null;
-    $scope.password = '';
-    $scope.passwordAgain = '';
-    $scope.buttonEnabled = true;
-
-    $scope.register = function () {
-      AuthService.register($scope.email, $scope.phone, $scope.password)
-        .then(function (response) {
-          if ( response.data.success ) {
-            $state.go('login');
-          }
-        })
-    }
-  }
-}());
-(function () {
-  'use strict';
-
-  angular
-    .module('application')
-    .directive("fileUploader", ['$rootScope', 'EstatesService', function ($rootScope, EstatesService) {
-      return {
-        scope: false,
-        link: function (scope, element) {
-          element.bind('change', function (evt) {
-            scope.$apply(function () {
-              if (evt.target.files.length === 0) {
-                return;
-              }
-              EstatesService.sendPhoto(evt.target.files[0])
-                .then(function (response) {
-                  response = response.data;
-                  if (response.success) {
-                    EstatesService.loadCurrentPhoto(response.url);
-                    $rootScope.$broadcast(EstatesService.status.PHOTO_UPLOADED);
-                  }
-                });
-            });
-          });
-        }
-      }
-    }]);
-})();
