@@ -64,4 +64,13 @@
             margin-left: 0;
         }
     }
+
+    &__input {
+        margin-top: 10px;
+        height: 20px;
+        background: white;
+        padding: 10px;
+        border: 1px solid #535353;
+        color: black;
+    }
 }

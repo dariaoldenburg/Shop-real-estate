@@ -1,7 +1,7 @@
 <div class="users"><h1 class="users__title">Users</h1>
 
     <div class="users__user" ng-repeat="user in users">
-        <h2>[[ user.name ]]</h2>
+        <h2>[[ user.email ]]</h2>
         <div class="users__buttons">
             <div class="users__button users__button_grey">Change password</div>
             <div class="users__button users__button_red">Remove</div>
@@ -11,6 +11,10 @@
     <div class="report-section">
         <div class="report-section__separator"></div>
         <h2 class="users__title" style="margin-left: 0px;">Generate monthly report</h2>
-        <div class="report-section__button users__button users__button_blue">Create</div>
+        <a ui-sref="nav.report({month:month, year:year})">
+            <div class="report-section__button users__button users__button_blue">Create</div>
+        </a>
+        <input class="users__input" type="number" ng-model="month">
+        <input class="users__input" type="number" ng-model="year">
     </div>
 </div>

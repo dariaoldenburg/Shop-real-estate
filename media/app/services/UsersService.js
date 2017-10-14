@@ -8,10 +8,10 @@
   function UsersService($http) {
     var self = this;
 
-    self.fetchAllUsers = function () {
+    self.fetchAllUsers = function (id) {
       return $http({
         method: 'GET',
-        url: '/api/users'
+        url: '/api/users/' + id
       });
     };
 

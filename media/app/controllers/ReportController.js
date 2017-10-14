@@ -22,11 +22,17 @@
           $scope.avgPrice += offer.price;
         });
         $scope.avgPrice /= response.data.offers.length;
+        if ( isNaN($scope.avgPrice) ) {
+          $scope.avgPrice = 0;
+        }
         $scope.avgSurface = 0;
         response.data.offers.forEach(function(offer) {
           $scope.avgSurface += offer.apartment_area;
         });
         $scope.avgSurface /= response.data.offers.length;
+        if ( isNaN($scope.avgSurface) ) {
+          $scope.avgSurface = 0;
+        }
       });
   }
 }());

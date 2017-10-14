@@ -1,4 +1,4 @@
-<div class="header">
+<div class="header" ng-controller="HeaderController">
   <div class="header__title">
     <a ui-sref="nav.estates">
       Shop real estate
@@ -6,8 +6,11 @@
   </div>
   <div class="header__messages">
     <span class="header__messages_new_messages">
+      <a ui-sref="nav.users" ng-if="usersVisible">
+        <i title="Admin panel" class="fa fa-cogs" aria-hidden="true"></i>
+      </a>
       <a ui-sref="nav.messages">
-        <i class="fa fa-envelope-open" aria-hidden="true"></i>
+        <i title="Messages" class="fa fa-envelope-open" aria-hidden="true"></i>
       </a>
     </span>
   </div>
