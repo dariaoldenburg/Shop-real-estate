@@ -5,7 +5,7 @@
     .module('application')
     .service('AuthService', AuthService);
 
-  function AuthService($http) {
+  function AuthService($http, $auth, $window, $rootScope, $state) {
     var self = this;
     self.userID = 3;
 
@@ -23,14 +23,26 @@
     };
 
     self.login = function (email, password) {
-      return $http({
-        method: 'POST',
-        url: '/api/authenticate',
-        data: {
-          email: email,
-          password: password,
+      var credentials = {
+        email: email,
+        password: password
+      };
+
+      $auth.login(credentials).then(function() {
+        return $http.get('api/authenticate/user');
+      }, function(error) {
+        if( error.status === 401 ) {
+          var loginErrorText = 'Podano niewłaściwy mail lub hasło';
+          MessagesService.showMessage('message', loginErrorText);
         }
+      }).then(function(response) {
+        var user = JSON.stringify(response.data.user);
+        $window.localStorage.setItem('user', user);
+        $rootScope.authenticated = true;
+        $rootScope.currentUser = response.data.user;
+        $state.go('estates');
       });
+
     }
 
   }

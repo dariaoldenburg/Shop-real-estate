@@ -17,12 +17,7 @@
     }, true);
 
     $scope.login = function () {
-      AuthService.login($scope.email, $scope.password)
-        .then(function (response) {
-          if ( response.data.token ) {
-            $state.go('estates');
-          }
-        })
+      AuthService.login($scope.email, $scope.password);
     }
   }
 }());

@@ -90,7 +90,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
               .state('report',{
                 name: 'report',
                 controller: 'ReportController',
-                url: '/report',
+                url: '/report/{month}/{year}',
                 templateUrl: 'views/report.html'
               });
 
@@ -109,7 +109,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
                                     $rootScope.authenticated = false;
                                     $rootScope.currentUser = null;
                                     response.data.error = 'Zaloguj się ponownie';
-                                    $state.go('nav.login');
+                                    $state.go('login');
                                 // });
 
                                 // AuthService.logout();

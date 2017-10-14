@@ -1,28 +1,13 @@
 <div class="users"><h1 class="users__title">Users</h1>
-    <div class="users__user"><h2>Olden</h2>
+
+    <div class="users__user" ng-repeat="user in users">
+        <h2>[[ user.name ]]</h2>
         <div class="users__buttons">
             <div class="users__button users__button_grey">Change password</div>
             <div class="users__button users__button_red">Remove</div>
         </div>
     </div>
-    <div class="users__user"><h2>John</h2>
-        <div class="users__buttons">
-            <div class="users__button users__button_grey">Change password</div>
-            <div class="users__button users__button_red">Remove</div>
-        </div>
-    </div>
-    <div class="users__user"><h2>Brit</h2>
-        <div class="users__buttons">
-            <div class="users__button users__button_grey">Change password</div>
-            <div class="users__button users__button_red">Remove</div>
-        </div>
-    </div>
-    <div class="users__user"><h2>Jessie</h2>
-        <div class="users__buttons">
-            <div class="users__button users__button_grey">Change password</div>
-            <div class="users__button users__button_red">Remove</div>
-        </div>
-    </div>
+
     <div class="report-section">
         <div class="report-section__separator"></div>
         <h2 class="users__title" style="margin-left: 0px;">Generate monthly report</h2>

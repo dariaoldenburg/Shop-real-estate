@@ -91,7 +91,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
               .state('report',{
                 name: 'report',
                 controller: 'ReportController',
-                url: '/report',
+                url: '/report/{month}/{year}',
                 templateUrl: 'views/report.html'
               });
 
@@ -110,7 +110,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
                                     $rootScope.authenticated = false;
                                     $rootScope.currentUser = null;
                                     response.data.error = 'Zaloguj się ponownie';
-                                    $state.go('nav.login');
+                                    $state.go('login');
                                 // });
 
                                 // AuthService.logout();
@@ -148,34 +148,6 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
         }
     ]);
-(function () {
-  'use strict';
-
-  angular
-    .module('application')
-    .directive("fileUploader", ['$rootScope', 'EstatesService', function ($rootScope, EstatesService) {
-      return {
-        scope: false,
-        link: function (scope, element) {
-          element.bind('change', function (evt) {
-            scope.$apply(function () {
-              if (evt.target.files.length === 0) {
-                return;
-              }
-              EstatesService.sendPhoto(evt.target.files[0])
-                .then(function (response) {
-                  response = response.data;
-                  if (response.success) {
-                    EstatesService.loadCurrentPhoto(response.url);
-                    $rootScope.$broadcast(EstatesService.status.PHOTO_UPLOADED);
-                  }
-                });
-            });
-          });
-        }
-      }
-    }]);
-})();
 (function() {
     'use strict';
 
@@ -408,12 +380,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
     }, true);
 
     $scope.login = function () {
-      AuthService.login($scope.email, $scope.password)
-        .then(function (response) {
-          if ( response.data.token ) {
-            $state.go('estates');
-          }
-        })
+      AuthService.login($scope.email, $scope.password);
     }
   }
 }());
@@ -471,6 +438,79 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
   angular
     .module('application')
+    .controller('ReportController', ReportController);
+
+  function ReportController($scope, ReportService, $stateParams) {
+    $scope.report = {};
+    $scope.month = '';
+    $scope.year = '';
+
+    ReportService.getReport($stateParams.month, $stateParams.year)
+      .then(function (response) {
+        $scope.users = response.users || [];
+      });
+  }
+}());
+(function() {
+  'use strict';
+
+  angular
+    .module('application')
+    .controller('UsersController', UsersController);
+
+  function UsersController($scope, UsersService) {
+    $scope.users = [];
+
+    UsersService.fetchAllUsers()
+      .then(function (response) {
+        $scope.users = response.users || [];
+      });
+
+    $scope.changePassword = function (id, password) {
+      UsersService.updatePassword(id, password);
+    };
+
+    $scope.removeUser = function (id) {
+      UsersService.removeUser(id)
+        .then(function (response) {
+          $scope.users = response.users || [];
+        });
+    }
+  }
+}());
+(function () {
+  'use strict';
+
+  angular
+    .module('application')
+    .directive("fileUploader", ['$rootScope', 'EstatesService', function ($rootScope, EstatesService) {
+      return {
+        scope: false,
+        link: function (scope, element) {
+          element.bind('change', function (evt) {
+            scope.$apply(function () {
+              if (evt.target.files.length === 0) {
+                return;
+              }
+              EstatesService.sendPhoto(evt.target.files[0])
+                .then(function (response) {
+                  response = response.data;
+                  if (response.success) {
+                    EstatesService.loadCurrentPhoto(response.url);
+                    $rootScope.$broadcast(EstatesService.status.PHOTO_UPLOADED);
+                  }
+                });
+            });
+          });
+        }
+      }
+    }]);
+})();
+(function() {
+  'use strict';
+
+  angular
+    .module('application')
     .service('AlertService', AlertService);
 
   function AlertService(alertify) {
@@ -510,7 +550,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
     .module('application')
     .service('AuthService', AuthService);
 
-  function AuthService($http) {
+  function AuthService($http, $auth, $window, $rootScope, $state) {
     var self = this;
     self.userID = 3;
 
@@ -528,14 +568,26 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
     };
 
     self.login = function (email, password) {
-      return $http({
-        method: 'POST',
-        url: '/api/authenticate',
-        data: {
-          email: email,
-          password: password,
+      var credentials = {
+        email: email,
+        password: password
+      };
+
+      $auth.login(credentials).then(function() {
+        return $http.get('api/authenticate/user');
+      }, function(error) {
+        if( error.status === 401 ) {
+          var loginErrorText = 'Podano niewłaściwy mail lub hasło';
+          MessagesService.showMessage('message', loginErrorText);
         }
+      }).then(function(response) {
+        var user = JSON.stringify(response.data.user);
+        $window.localStorage.setItem('user', user);
+        $rootScope.authenticated = true;
+        $rootScope.currentUser = response.data.user;
+        $state.go('estates');
       });
+
     }
 
   }
@@ -738,5 +790,60 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
         url: '/api/messages/' + id
       });
     }
+  }
+}());
+(function () {
+  'use strict';
+
+  angular
+    .module('application')
+    .service('ReportService', ReportService);
+
+  function ReportService($http) {
+    var self = this;
+
+    self.getReport = function (month, year) {
+      return $http({
+        method: 'GET',
+        url: '/api/offers/generateReport/' + month + '/' + year
+      });
+    };
+
+  }
+}());
+(function () {
+  'use strict';
+
+  angular
+    .module('application')
+    .service('UsersService', UsersService);
+
+  function UsersService($http) {
+    var self = this;
+
+    self.fetchAllUsers = function () {
+      return $http({
+        method: 'GET',
+        url: '/api/users'
+      });
+    };
+
+    self.removeUser = function (id) {
+      return $http({
+        method: 'DELETE',
+        url: '/api/users/' + id
+      });
+    };
+
+    self.updatePassword = function (id, password) {
+      return $http({
+        method: 'PUT',
+        url: '/api/users/' + id,
+        data: {
+          password: password
+        }
+      });
+    };
+
   }
 }());
