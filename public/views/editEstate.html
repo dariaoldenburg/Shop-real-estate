@@ -1,34 +1,66 @@
 <div class="add-offer">
     <div class="add-offer__form"><h1 class="add-offer__title">Edit offer</h1>
         <div class="form">
-            <div class="input"><input type="text" class="input__element"
-                                      id="address" value="Wenecjanska 8"
-                                      placeholder="Address"></div>
-            <div class="input"><input type="number" class="input__element"
-                                      id="rooms" value="1"
-                                      placeholder="Number of rooms"></div>
-            <div class="input"><input type="number" class="input__element"
-                                      id="surface" value="30"
-                                      placeholder="Surface (m2)"></div>
-            <div class="input"><input type="number" class="input__element"
-                                      id="floor" value="5"
-                                      placeholder="Floor"></div>
-            <div class="input"><label for="balcony" class="input__label">Has balcony</label><input type="checkbox"
-                                                                                                   class="input__element"
-                                                                                                   id="balcony"
-                                                                                                   value="true"
-                                                                                                   placeholder="Has balcony">
+            <div class="input">
+                <input type="text" class="input__element"
+                       id="city" value=""
+                       ng-model="city"
+                       placeholder="City">
             </div>
-            <div class="input"><input type="text" class="input__element"
-                                      id="description"
-                                      value="Awesome apartment!"
-                                      placeholder="Short description"></div>
-            <div class="input"><label for="photo" class="input__label">Photos</label><input type="file"
-                                                                                            class="input__element"
-                                                                                            id="photo"
-                                                                                            placeholder="Photos"
-                                                                                            multiple=""></div>
+            <div class="input">
+                <input type="text" class="input__element"
+                       id="street" value=""
+                       ng-model="street"
+                       placeholder="Street">
+            </div>
+            <div class="input">
+                <input type="text" class="input__element"
+                       id="price" value=""
+                       ng-model="price"
+                       placeholder="Price [PLN]">
+            </div>
+            <div class="input">
+                <input type="number" class="input__element"
+                       id="rooms" value=""
+                       ng-model="rooms"
+                       placeholder="Number of rooms">
+            </div>
+            <div class="input">
+                <input type="number" class="input__element"
+                       id="surface" value=""
+                       ng-model="surface"
+                       placeholder="Surface (m2)">
+            </div>
+            <div class="input">
+                <input type="number" class="input__element"
+                       id="floor" value=""
+                       ng-model="floor"
+                       placeholder="Floor">
+            </div>
+            <div class="input">
+                <label for="balcony" class="input__label">Has balcony</label>
+                <input type="checkbox"
+                       class="input__element"
+                       id="balcony" value=""
+                       ng-model="balcony"
+                       placeholder="Has balcony">
+            </div>
+            <div class="input">
+                <input type="text" class="input__element"
+                       id="description" value=""
+                       ng-model="description"
+                       placeholder="Short description">
+            </div>
+            <div class="input">
+                <label for="photo" class="input__label">Photos</label>
+                <input type="file"
+                       class="input__element"
+                       id="photo"
+                       placeholder="Photos"
+                       file-uploader
+                       multiple="">
+            </div>
         </div>
-        <div class="add-offer__button add-offer__button_disabled">Save changes</div>
+        <div ng-class="{'add-offer__button': 1 === 1, 'add-offer__button_disabled': !buttonEnabled}" ng-click="addEstate()">Save changes</div>
     </div>
 </div>

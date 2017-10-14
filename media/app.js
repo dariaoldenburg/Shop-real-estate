@@ -66,7 +66,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
               .state('edit-estate',{
                 name: 'editEstate',
                 controller: 'editEstateController',
-                url: '/edit-estate',
+                url: '/edit-estate/{id}',
                 templateUrl: 'views/editEstate.html'
               })
               .state('estates',{

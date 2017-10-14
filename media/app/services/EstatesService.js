@@ -19,6 +19,13 @@
       });
     };
 
+    self.fetchEstateById = function (id) {
+      return $http({
+        method: 'GET',
+        url: '/api/offers/' + id
+      });
+    };
+
     self.sendPhoto = function (photo) {
       var updateData = new FormData();
       updateData.append('file', photo);

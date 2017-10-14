@@ -47,7 +47,7 @@
             <div class="offer-box__buttons" ng-if="userId === offer.user_id">
                 <div class="offer-box__button offer-box__button_blue" ng-click="setSold(offer.id)" ng-if="offer.status !== 0">Set sold</div>
                 <div class="offer-box__button offer-box__button_blue" ng-click="setSold(offer.id)" ng-if="offer.status === 0">Set for sale</div>
-                <a href="/edit-offer">
+                <a ng-href="/#!/edit-offer/[[ offer.id ]]">
                     <div class="offer-box__button offer-box__button_grey">Edit</div>
                 </a>
                 <div class="offer-box__button offer-box__button_red" ng-click="remove(offer.id)">Remove</div>
