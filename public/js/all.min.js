@@ -46,53 +46,83 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
             $urlRouterProvider.otherwise('/estates');
 
             $stateProvider
-                .state('register',{
-                    name: 'register',
-                    controller: 'RegisterController',
-                    url: '/register',
-                    templateUrl: 'views/register.html'
-                })
+              .state('nav', {
+                abstract: true,
+                templateUrl: 'views/nav.html'
+              })
+              .state('register',{
+                controller: 'RegisterController',
+                url: '/register',
+                templateUrl: 'views/register.html'
+              })
               .state('login',{
-                name: 'login',
                 controller: 'LoginController',
                 url: '/login',
                 templateUrl: 'views/login.html'
               })
-              .state('add-estate',{
-                name: 'addEstate',
-                controller: 'addEstateController',
+              .state('nav.add-estate',{
                 url: '/add-estate',
-                templateUrl: 'views/addEstate.html'
+                views: {
+                  '': {
+                    templateUrl: 'views/addEstate.html',
+                    controller: 'addEstateController'
+                  }
+                }
               })
-              .state('edit-estate',{
-                name: 'editEstate',
-                controller: 'editEstateController',
+              .state('nav.edit-estate',{
                 url: '/edit-estate/{id}',
-                templateUrl: 'views/editEstate.html'
+                views: {
+                  '': {
+                    templateUrl: 'views/editEstate.html',
+                    controller: 'editEstateController'
+                  }
+                }
               })
-              .state('estates',{
-                name: 'estates',
-                controller: 'EstatesController',
+              .state('nav.estates',{
                 url: '/estates',
-                templateUrl: 'views/estates.html'
+                views: {
+                  '': {
+                    controller: 'EstatesController',
+                    templateUrl: 'views/estates.html'
+                  }
+                }
               })
-              .state('messages',{
-                name: 'messages',
-                controller: 'MessagesController',
+              .state('nav.messages',{
                 url: '/messages',
-                templateUrl: 'views/messages.html'
+                views: {
+                  '': {
+                    controller: 'MessagesController',
+                    templateUrl: 'views/messages.html'
+                  }
+                }
               })
-              .state('users',{
-                name: 'users',
-                controller: 'UsersController',
+              .state('nav.users',{
                 url: '/users',
-                templateUrl: 'views/users.html'
+                views: {
+                  '': {
+                    controller: 'UsersController',
+                    templateUrl: 'views/users.html'
+                  }
+                },
+                //check czy user jest adminem
+                // resolve: {
+                  // notificationsList: function(NotificationService, $rootScope, $stateParams) {
+                  //   // if($window.localStorage.getItem('satellizer_token')) {
+                  //   return NotificationService.getNotifications($stateParams.pageId).then(function (result) {
+                  //     return result.data.notifications;
+                  //   });
+                    // }
+                  // }
+                // }
               })
-              .state('report',{
-                name: 'report',
-                controller: 'ReportController',
+              .state('nav.report',{
                 url: '/report/{month}/{year}',
-                templateUrl: 'views/report.html'
+                views: {
+                  '': {
+                    controller: 'ReportController',
+                    templateUrl: 'views/report.html'
+                  }
+                }
               });
 
             $httpProvider.defaults.useXDomain = true;
@@ -366,6 +396,17 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
   angular
     .module('application')
+    .controller('HeaderController', HeaderController);
+
+  function HeaderController($scope, $rootScope) {
+    $scope.usersVisible = $rootScope.currentUser.role === 'admin';
+  }
+}());
+(function() {
+  'use strict';
+
+  angular
+    .module('application')
     .controller('LoginController', LoginController);
 
   function LoginController($scope, AuthService, $state) {
@@ -472,12 +513,12 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
     .module('application')
     .controller('UsersController', UsersController);
 
-  function UsersController($scope, UsersService) {
+  function UsersController($scope, $rootScope, UsersService) {
     $scope.users = [];
 
-    UsersService.fetchAllUsers()
+    UsersService.fetchAllUsers($rootScope.currentUser.id)
       .then(function (response) {
-        $scope.users = response.users || [];
+        $scope.users = response.offers || [];
       });
 
     $scope.changePassword = function (id, password) {
@@ -599,7 +640,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
         $window.localStorage.setItem('user', user);
         $rootScope.authenticated = true;
         $rootScope.currentUser = response.data.user;
-        $state.go('estates');
+        $state.go('nav.estates');
       });
 
     }
@@ -835,10 +876,10 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
   function UsersService($http) {
     var self = this;
 
-    self.fetchAllUsers = function () {
+    self.fetchAllUsers = function (id) {
       return $http({
         method: 'GET',
-        url: '/api/users'
+        url: '/api/users/' + id
       });
     };
 

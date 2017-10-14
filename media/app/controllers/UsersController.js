@@ -5,12 +5,12 @@
     .module('application')
     .controller('UsersController', UsersController);
 
-  function UsersController($scope, UsersService) {
+  function UsersController($scope, $rootScope, UsersService) {
     $scope.users = [];
 
-    UsersService.fetchAllUsers()
+    UsersService.fetchAllUsers($rootScope.currentUser.id)
       .then(function (response) {
-        $scope.users = response.users || [];
+        $scope.users = response.offers || [];
       });
 
     $scope.changePassword = function (id, password) {
