@@ -233,12 +233,6 @@ class OfferController extends Controller
                       ->whereYear('date_sale', '=', $year)
                       ->get();
 
-        if($offers->isEmpty()) {
-            return response()->json([
-                'error' => 'Offers doesn\'t exist'
-            ], 400);
-        }
-
         return response()->json([
             'offers' => $offers
         ], 200);
