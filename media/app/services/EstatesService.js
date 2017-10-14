@@ -76,7 +76,7 @@
           balcony: data.balcony || false,
           description: data.description || '',
           price: data.price || '',
-          user_id: data.userID || '',
+          user_id: data.userID,
         }
       });
     };

@@ -5,7 +5,7 @@
     .module('application')
     .controller('editEstateController', EditEstateController);
 
-  function EditEstateController($scope, EstatesService, AuthService, $state, $stateParams) {
+  function EditEstateController($scope, EstatesService, $state, $stateParams, $rootScope) {
     $scope.city = '';
     $scope.street = '';
     $scope.price = '';
@@ -44,6 +44,9 @@
     }, true);
 
     $scope.updateEstate = function () {
+      if ( $scope.images !== '' ) {
+        $scope.newImage = $scope.images;
+      }
       EstatesService.updateEstate({
         id: $scope.id,
         city: $scope.city,
@@ -54,7 +57,7 @@
         floor: $scope.floor,
         balcony: $scope.balcony,
         description: $scope.description,
-        userID: AuthService.userID,
+        userId: $rootScope.currentUser.id
       })
         .then(function (response) {
           if ( response.data.success ) {

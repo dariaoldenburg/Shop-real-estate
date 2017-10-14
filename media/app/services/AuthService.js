@@ -39,7 +39,6 @@
         $window.localStorage.setItem('user', user);
         $rootScope.authenticated = true;
         $rootScope.currentUser = response.data.user;
-        // self.userID = $rootScope.currentUser.id;
         $state.go('nav.estates');
       });
 
