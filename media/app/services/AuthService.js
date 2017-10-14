@@ -9,31 +9,18 @@
     var self = this;
     self.userID = 3;
 
-    self.remindPassword = function (email) {
+    self.register = function (email, number, password) {
       return $http({
         method: 'POST',
-        url: 'api/password/email',
+        url: '/api/register',
         data: {
-          email: email
+          email: email,
+          telephone: number,
+          password: password,
+          password_confirmation: password
         }
       });
-    };
-
-    self.resetPassword = function (credentials) {
-      return $http({
-        method: 'POST',
-        url: 'api/password/reset',
-        data: credentials
-      });
-    };
-
-    self.settingsAccount = function (data) {
-      return $http({
-        method: 'POST',
-        url: 'api/user/settingsAccount',
-        data: data
-      });
-    };
+    }
 
   }
 }());

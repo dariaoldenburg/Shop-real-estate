@@ -5,18 +5,20 @@
     .module('application')
     .controller('RegisterController', RegisterController);
 
-  function RegisterController($scope, AuthService, $rootScope) {
-    $scope.login = '';
+  function RegisterController($scope, AuthService, $state) {
+    $scope.email = '';
     $scope.phone = null;
     $scope.password = '';
+    $scope.passwordAgain = '';
     $scope.buttonEnabled = true;
 
-    $rootScope.$watch('login', function (obje) {
-      console.log(obje);
-    });
-
     $scope.register = function () {
-      console.log('click');
+      AuthService.register($scope.email, $scope.phone, $scope.password)
+        .then(function (response) {
+          if ( response.data.success ) {
+            $state.go('login');
+          }
+        })
     }
   }
 }());
