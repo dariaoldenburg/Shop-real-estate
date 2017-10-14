@@ -26,6 +26,13 @@
       });
     };
 
+    self.fetchEstateByUserId = function (id) {
+      return $http({
+        method: 'GET',
+        url: '/api/offers/user/' + id
+      });
+    };
+
     self.sendPhoto = function (photo) {
       var updateData = new FormData();
       updateData.append('file', photo);

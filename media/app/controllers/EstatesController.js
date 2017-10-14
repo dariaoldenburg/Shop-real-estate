@@ -5,28 +5,42 @@
     .module('application')
     .controller('EstatesController', EstatesController);
 
-  function EstatesController($scope, EstatesService, FilterService, AuthService) {
+  function EstatesController($scope, EstatesService, FilterService, AuthService, $rootScope) {
     $scope.estates = [];
     $scope.filteredEstates = [];
     $scope.filters = Object.assign({}, FilterService.filters);
 
-    EstatesService.fetchAllEstates()
-      .then(function (response) {
-        $scope.estates = response.data.offers || [];
-        $scope.filteredEstates = response.data.offers || [];
-      });
+    if(!$rootScope.currentUser){
+      EstatesService.fetchAllEstates()
+        .then(function (response) {
+          $scope.estates = response.data.offers || [];
+          $scope.filteredEstates = response.data.offers || [];
+        });
+    } else {
+      EstatesService.fetchEstateByUserId($rootScope.currentUser.id)
+        .then(function (response) {
+          $scope.estates = response.data.offers || [];
+          $scope.filteredEstates = response.data.offers || [];
+        });
+    }
 
     $scope.setSold = function (offerID) {
       EstatesService.setSold(offerID);
     };
 
     $scope.buy = function (offer) {
-      EstatesService.buy($scope.userId, offer.user_id, offer.id);
+      EstatesService.buy($scope.currentUser.id, offer.user_id, offer.id);
     };
 
     $scope.remove = function (offerID) {
       EstatesService.remove(offerID)
-      ;
+        .then(function () {
+          EstatesService.fetchAllEstates()
+            .then(function (response) {
+              $scope.estates = response.data.offers || [];
+              $scope.filteredEstates = response.data.offers || [];
+            });
+        });
     };
 
     $scope.updateFilter = function(name) {

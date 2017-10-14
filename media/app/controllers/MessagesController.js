@@ -18,6 +18,8 @@
           MessagesService.fetchAllMessages($rootScope.currentUser.id)
             .then(function (response) {
               $scope.messages = response.data.messages;
+
+
             });
         })
     }

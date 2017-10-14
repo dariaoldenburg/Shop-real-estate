@@ -17,7 +17,7 @@ class OfferController extends Controller
      */
     public function index()
     {
-        $offers = Offer::all();
+        $offers = Offer::where('status' != false);
 
         return response()->json([
             'offers' => $offers
@@ -111,7 +111,8 @@ class OfferController extends Controller
      */
     public function showOffersByUser($idUser)
     {
-        $offers = Offer::where('user_id', '=', $idUser)->get();
+        $offers = Offer::raw("SELECT * FROM offers WHERE status=true OR (user_id = $idUser AND status=false)")->get();
+
         if(!isset($offers)) {
             return response()->json([
                 'error' => 'Offers for user doesn\'t exist'

@@ -22,7 +22,12 @@
     $scope.removeUser = function (id) {
       UsersService.removeUser(id)
         .then(function (response) {
-          $scope.users = response.users || [];
+          UsersService.fetchAllUsers($rootScope.currentUser.id)
+            .then(function (response) {
+              $scope.users = response.data.offers || [];
+          });
+
+          // $scope.users = response.users || [];
         });
     }
   }

@@ -102,17 +102,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
                     controller: 'UsersController',
                     templateUrl: 'views/users.html'
                   }
-                },
-                //check czy user jest adminem
-                // resolve: {
-                  // notificationsList: function(NotificationService, $rootScope, $stateParams) {
-                  //   // if($window.localStorage.getItem('satellizer_token')) {
-                  //   return NotificationService.getNotifications($stateParams.pageId).then(function (result) {
-                  //     return result.data.notifications;
-                  //   });
-                    // }
-                  // }
-                // }
+                }
               })
               .state('nav.changePassword',{
                 url: '/changePassword/{id}',
@@ -142,18 +132,12 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
                     'responseError': function (response) {
                         if(response.status === 400) {
                             if(response.data.error == 'token_not_provided'){
-                                // $auth.logout().then(function () {
                                     localStorage.removeItem('satellizer_token');
                                     localStorage.removeItem('user');
                                     $rootScope.authenticated = false;
                                     $rootScope.currentUser = null;
                                     response.data.error = 'Zaloguj się ponownie';
                                     $state.go('login');
-                                // });
-
-                                // AuthService.logout();
-                                // $http.defaults.headers.common.Authorization = '';
-                                // $state.go('nav.login');
                             }
                             AlertService.showMessage(response.data);
                         }

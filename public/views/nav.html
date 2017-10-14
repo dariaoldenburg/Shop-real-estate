@@ -9,10 +9,14 @@
       <a ui-sref="nav.users" ng-if="usersVisible">
         <i title="Admin panel" class="fa fa-cogs" aria-hidden="true"></i>
       </a>
-      <a ui-sref="nav.messages">
+      <a ui-sref="nav.messages" ng-if="logged">
         <i title="Messages" class="fa fa-envelope-open" aria-hidden="true"></i>
         <span ng-if="unseen > 0">([[ unseen ]])</span>
       </a>
+      <a ui-sref="login" ng-if="!logged">
+        <i class="fa fa-sign-in" aria-hidden="true"></i>
+      </a>
+      <i ng-if="currentUser" class="fa fa-sign-out" aria-hidden="true" ng-click="logout()"></i>
     </span>
   </div>
 </div>
