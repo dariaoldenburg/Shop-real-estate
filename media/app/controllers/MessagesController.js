@@ -5,11 +5,21 @@
     .module('application')
     .controller('MessagesController', MessagesController);
 
-  function MessagesController($scope, MessagesService, AuthService) {
+  function MessagesController($scope, MessagesService, $rootScope) {
     $scope.messages = [];
-    MessagesService.fetchAllMessages(AuthService.userID)
+    MessagesService.fetchAllMessages($rootScope.currentUser.id)
       .then(function (response) {
         $scope.messages = response.data.messages;
       });
+
+    $scope.setSeen = function (id) {
+      MessagesService.setSeen(id)
+        .then(function () {
+          MessagesService.fetchAllMessages($rootScope.currentUser.id)
+            .then(function (response) {
+              $scope.messages = response.data.messages;
+            });
+        })
+    }
   }
 }());
