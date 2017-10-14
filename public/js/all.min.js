@@ -46,53 +46,83 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
             $urlRouterProvider.otherwise('/estates');
 
             $stateProvider
-                .state('register',{
-                    name: 'register',
-                    controller: 'RegisterController',
-                    url: '/register',
-                    templateUrl: 'views/register.html'
-                })
+              .state('nav', {
+                abstract: true,
+                templateUrl: 'views/nav.html'
+              })
+              .state('register',{
+                controller: 'RegisterController',
+                url: '/register',
+                templateUrl: 'views/register.html'
+              })
               .state('login',{
-                name: 'login',
                 controller: 'LoginController',
                 url: '/login',
                 templateUrl: 'views/login.html'
               })
-              .state('add-estate',{
-                name: 'addEstate',
-                controller: 'addEstateController',
+              .state('nav.add-estate',{
                 url: '/add-estate',
-                templateUrl: 'views/addEstate.html'
+                views: {
+                  '': {
+                    templateUrl: 'views/addEstate.html',
+                    controller: 'addEstateController'
+                  }
+                }
               })
-              .state('edit-estate',{
-                name: 'editEstate',
-                controller: 'editEstateController',
+              .state('nav.edit-estate',{
                 url: '/edit-estate/{id}',
-                templateUrl: 'views/editEstate.html'
+                views: {
+                  '': {
+                    templateUrl: 'views/editEstate.html',
+                    controller: 'editEstateController'
+                  }
+                }
               })
-              .state('estates',{
-                name: 'estates',
-                controller: 'EstatesController',
+              .state('nav.estates',{
                 url: '/estates',
-                templateUrl: 'views/estates.html'
+                views: {
+                  '': {
+                    controller: 'EstatesController',
+                    templateUrl: 'views/estates.html'
+                  }
+                }
               })
-              .state('messages',{
-                name: 'messages',
-                controller: 'MessagesController',
+              .state('nav.messages',{
                 url: '/messages',
-                templateUrl: 'views/messages.html'
+                views: {
+                  '': {
+                    controller: 'MessagesController',
+                    templateUrl: 'views/messages.html'
+                  }
+                }
               })
-              .state('users',{
-                name: 'users',
-                controller: 'UsersController',
+              .state('nav.users',{
                 url: '/users',
-                templateUrl: 'views/users.html'
+                views: {
+                  '': {
+                    controller: 'UsersController',
+                    templateUrl: 'views/users.html'
+                  }
+                },
+                //check czy user jest adminem
+                // resolve: {
+                  // notificationsList: function(NotificationService, $rootScope, $stateParams) {
+                  //   // if($window.localStorage.getItem('satellizer_token')) {
+                  //   return NotificationService.getNotifications($stateParams.pageId).then(function (result) {
+                  //     return result.data.notifications;
+                  //   });
+                    // }
+                  // }
+                // }
               })
-              .state('report',{
-                name: 'report',
-                controller: 'ReportController',
+              .state('nav.report',{
                 url: '/report/{month}/{year}',
-                templateUrl: 'views/report.html'
+                views: {
+                  '': {
+                    controller: 'ReportController',
+                    templateUrl: 'views/report.html'
+                  }
+                }
               });
 
             $httpProvider.defaults.useXDomain = true;
@@ -148,6 +178,34 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
         }
     ]);
+(function () {
+  'use strict';
+
+  angular
+    .module('application')
+    .directive("fileUploader", ['$rootScope', 'EstatesService', function ($rootScope, EstatesService) {
+      return {
+        scope: false,
+        link: function (scope, element) {
+          element.bind('change', function (evt) {
+            scope.$apply(function () {
+              if (evt.target.files.length === 0) {
+                return;
+              }
+              EstatesService.sendPhoto(evt.target.files[0])
+                .then(function (response) {
+                  response = response.data;
+                  if (response.success) {
+                    EstatesService.loadCurrentPhoto(response.url);
+                    $rootScope.$broadcast(EstatesService.status.PHOTO_UPLOADED);
+                  }
+                });
+            });
+          });
+        }
+      }
+    }]);
+})();
 (function() {
     'use strict';
 
@@ -262,7 +320,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
     .module('application')
     .controller('editEstateController', EditEstateController);
 
-  function EditEstateController($scope, EstatesService, AuthService, $state, $stateParams) {
+  function EditEstateController($scope, EstatesService, $state, $stateParams, $rootScope) {
     $scope.city = '';
     $scope.street = '';
     $scope.price = '';
@@ -301,6 +359,9 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
     }, true);
 
     $scope.updateEstate = function () {
+      if ( $scope.images !== '' ) {
+        $scope.newImage = $scope.images;
+      }
       EstatesService.updateEstate({
         id: $scope.id,
         city: $scope.city,
@@ -311,7 +372,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
         floor: $scope.floor,
         balcony: $scope.balcony,
         description: $scope.description,
-        userID: AuthService.userID,
+        userId: $rootScope.currentUser.id
       })
         .then(function (response) {
           if ( response.data.success ) {
@@ -331,7 +392,6 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
   function EstatesController($scope, EstatesService, FilterService, AuthService) {
     $scope.estates = [];
     $scope.filteredEstates = [];
-    $scope.userId = AuthService.userID;
     $scope.filters = Object.assign({}, FilterService.filters);
 
     EstatesService.fetchAllEstates()
@@ -492,34 +552,6 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
     }
   }
 }());
-(function () {
-  'use strict';
-
-  angular
-    .module('application')
-    .directive("fileUploader", ['$rootScope', 'EstatesService', function ($rootScope, EstatesService) {
-      return {
-        scope: false,
-        link: function (scope, element) {
-          element.bind('change', function (evt) {
-            scope.$apply(function () {
-              if (evt.target.files.length === 0) {
-                return;
-              }
-              EstatesService.sendPhoto(evt.target.files[0])
-                .then(function (response) {
-                  response = response.data;
-                  if (response.success) {
-                    EstatesService.loadCurrentPhoto(response.url);
-                    $rootScope.$broadcast(EstatesService.status.PHOTO_UPLOADED);
-                  }
-                });
-            });
-          });
-        }
-      }
-    }]);
-})();
 (function() {
   'use strict';
 
@@ -566,7 +598,6 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
   function AuthService($http, $auth, $window, $rootScope, $state) {
     var self = this;
-    self.userID = 3;
 
     self.register = function (email, number, password) {
       return $http({
@@ -599,7 +630,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
         $window.localStorage.setItem('user', user);
         $rootScope.authenticated = true;
         $rootScope.currentUser = response.data.user;
-        $state.go('estates');
+        $state.go('nav.estates');
       });
 
     }
@@ -684,7 +715,7 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
           balcony: data.balcony || false,
           description: data.description || '',
           price: data.price || '',
-          user_id: data.userID || '',
+          user_id: data.userID,
         }
       });
     };
