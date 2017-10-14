@@ -114,6 +114,15 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
                   // }
                 // }
               })
+              .state('nav.changePassword',{
+                url: '/changePassword/{id}',
+                views: {
+                  '': {
+                    controller: 'ChangePasswordController',
+                    templateUrl: 'views/changePassword.html'
+                  }
+                }
+              })
               .state('nav.report',{
                 url: '/report/{month}/{year}',
                 views: {

@@ -51,7 +51,7 @@
     background: #ffffff;
     padding: 10px;
     border: 1px solid #535353;
-    color: white; }
+    color: black; }
     .filter-panel__input:focus {
       outline: none; }
   .filter-panel__inputs-box {
@@ -129,6 +129,8 @@
     font-size: 1.15rem; }
     .header__messages_new_messages {
       color: red; }
+    .header__messages i {
+      margin: 0 10px; }
 
 .add-offer {
   width: 100%;
@@ -472,3 +474,10 @@ h1 {
       width: 120px;
       padding: 10px 30px;
       margin-left: 0; }
+  .users__input {
+    margin-top: 10px;
+    height: 20px;
+    background: white;
+    padding: 10px;
+    border: 1px solid #535353;
+    color: black; }

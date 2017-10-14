@@ -3,8 +3,10 @@
     <div class="users__user" ng-repeat="user in users">
         <h2>[[ user.email ]]</h2>
         <div class="users__buttons">
-            <div class="users__button users__button_grey">Change password</div>
-            <div class="users__button users__button_red">Remove</div>
+            <a ui-sref="nav.changePassword({id:user.id})">
+                <div class="users__button users__button_grey">Change password</div>
+            </a>
+            <div class="users__button users__button_red" ng-click="removeUser(user.id)">Remove</div>
         </div>
     </div>
 

@@ -115,6 +115,15 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
                   // }
                 // }
               })
+              .state('nav.changePassword',{
+                url: '/changePassword/{id}',
+                views: {
+                  '': {
+                    controller: 'ChangePasswordController',
+                    templateUrl: 'views/changePassword.html'
+                  }
+                }
+              })
               .state('nav.report',{
                 url: '/report/{month}/{year}',
                 views: {
@@ -318,6 +327,24 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
   angular
     .module('application')
+    .controller('UsersController', ChangePasswordController);
+
+  function ChangePasswordController($scope, $stateParams, UsersService) {
+
+    $scope.idUser = $stateParams.id;
+
+    $scope.changePassword = function () {
+      UsersService.updatePassword($scope.idUser, $scope.password);
+    };
+
+
+  }
+}());
+(function() {
+  'use strict';
+
+  angular
+    .module('application')
     .controller('editEstateController', EditEstateController);
 
   function EditEstateController($scope, EstatesService, $state, $stateParams, $rootScope) {
@@ -426,6 +453,17 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
 
   angular
     .module('application')
+    .controller('HeaderController', HeaderController);
+
+  function HeaderController($scope, $rootScope) {
+    $scope.usersVisible = $rootScope.currentUser.role === 'admin';
+  }
+}());
+(function() {
+  'use strict';
+
+  angular
+    .module('application')
     .controller('LoginController', LoginController);
 
   function LoginController($scope, AuthService, $state) {
@@ -517,11 +555,17 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
           $scope.avgPrice += offer.price;
         });
         $scope.avgPrice /= response.data.offers.length;
+        if ( isNaN($scope.avgPrice) ) {
+          $scope.avgPrice = 0;
+        }
         $scope.avgSurface = 0;
         response.data.offers.forEach(function(offer) {
           $scope.avgSurface += offer.apartment_area;
         });
         $scope.avgSurface /= response.data.offers.length;
+        if ( isNaN($scope.avgSurface) ) {
+          $scope.avgSurface = 0;
+        }
       });
   }
 }());
@@ -532,12 +576,14 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
     .module('application')
     .controller('UsersController', UsersController);
 
-  function UsersController($scope, UsersService) {
+  function UsersController($scope, $rootScope, UsersService) {
     $scope.users = [];
+    $scope.month = 1;
+    $scope.year = 2017;
 
-    UsersService.fetchAllUsers()
+    UsersService.fetchAllUsers($rootScope.currentUser.id)
       .then(function (response) {
-        $scope.users = response.users || [];
+        $scope.users = response.data.offers || [];
       });
 
     $scope.changePassword = function (id, password) {
@@ -866,10 +912,10 @@ angular.module("application", ['ui.router', 'satellizer', 'ngAlertify', 'uiSwitc
   function UsersService($http) {
     var self = this;
 
-    self.fetchAllUsers = function () {
+    self.fetchAllUsers = function (id) {
       return $http({
         method: 'GET',
-        url: '/api/users'
+        url: '/api/users/' + id
       });
     };
 
