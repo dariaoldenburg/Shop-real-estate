@@ -13,6 +13,13 @@
         method: 'GET',
         url: '/api/messages/' + id
       });
+    };
+
+    self.setSeen = function (id) {
+      return $http({
+        method: 'PUT',
+        url: '/api/messages/' + id
+      });
     }
   }
 }());

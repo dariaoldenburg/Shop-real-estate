@@ -1,5 +1,5 @@
 <div class="messages"><h1 class="messages__title">Messages</h1>
-    <div class="messages__message" ng-repeat="message in messages">
+    <div title="Set seen" ng-class="{'messages__message': 1 === 1, 'messages__message_unseen': message.seen === 0}" ng-repeat="message in messages" ng-click="setSeen(message.id)">
         <h2>[[ message.message ]]</h2>
     </div>
 </div>

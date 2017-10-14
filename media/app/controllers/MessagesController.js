@@ -11,5 +11,15 @@
       .then(function (response) {
         $scope.messages = response.data.messages;
       });
+
+    $scope.setSeen = function (id) {
+      MessagesService.setSeen(id)
+        .then(function () {
+          MessagesService.fetchAllMessages($rootScope.currentUser.id)
+            .then(function (response) {
+              $scope.messages = response.data.messages;
+            });
+        })
+    }
   }
 }());
