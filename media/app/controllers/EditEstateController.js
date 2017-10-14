@@ -14,12 +14,14 @@
     $scope.floor = '';
     $scope.balcony = false;
     $scope.description = '';
+    $scope.id = '';
 
     $scope.buttonEnabled = false;
 
     EstatesService.fetchEstateById($stateParams.id)
       .then(function (response) {
         var estateData = response.data.offer;
+        $scope.id = estateData.id;
         $scope.city = estateData.city;
         $scope.street = estateData.street;
         $scope.price = estateData.price;
@@ -42,7 +44,8 @@
     }, true);
 
     $scope.updateEstate = function () {
-      EstatesService.addEstate({
+      EstatesService.updateEstate({
+        id: $scope.id,
         city: $scope.city,
         street: $scope.street,
         price: $scope.price,

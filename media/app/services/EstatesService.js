@@ -62,6 +62,25 @@
       });
     };
 
+    self.updateEstate = function (data) {
+      return $http({
+        method: 'PUT',
+        url: '/api/offers/' + data.id,
+        data: {
+          city: data.city || '',
+          street: data.street || '',
+          images: self.currentPhoto,
+          no_rooms: data.rooms || '',
+          apartment_area: data.surface || '',
+          floors: data.floor || '',
+          balcony: data.balcony || false,
+          description: data.description || '',
+          price: data.price || '',
+          user_id: data.userID || '',
+        }
+      });
+    };
+
     self.setSold = function (offerID) {
       return $http({
         method: 'PUT',
