@@ -10,7 +10,7 @@
 
     UsersService.fetchAllUsers($rootScope.currentUser.id)
       .then(function (response) {
-        $scope.users = response.offers || [];
+        $scope.users = response.data.offers || [];
       });
 
     $scope.changePassword = function (id, password) {
